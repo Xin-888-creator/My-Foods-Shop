@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的高级小食店</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .food-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <header class="sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-tighter">THE FOODIE.</h1>
+            <div class="bg-black text-white px-4 py-1 rounded-full text-xs">营业中</div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+        <h2 class="text-4xl font-bold mb-8">今日菜单</h2>
+        <div id="food-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <p class="text-gray-400">正在准备新鲜食材...</p>
+        </div>
+    </main>
+
+    <script>
+        // 1. 配置你的密钥 (把这里换成你在 Supabase 复制的值)
+        const SB_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
+        const SB_KEY = "sb_publishable_5x-HWYpcXZJ-akV7MZJotA_kwK1lBAK";
+        const MY_PHONE = "60128385889"; // 你的手机号，格式：国家代码+号码
+
+        const supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        // 2. 获取数据并渲染
+        async function fetchMenu() {
+            const { data: foods, error } = await supabase.from('foods').select('*');
+            
+            if (error) {
+                console.error('加载失败:', error);
+                return;
+            }
+
+            const container = document.getElementById('food-container');
+            container.innerHTML = foods.map(item => `
+                <div class="food-card bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 transition-all duration-300">
+                    <div class="aspect-square bg-gray-100">
+                        <img src="${item.image_url || 'https://via.placeholder.com/400?text=Food'}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">${item.name}</h3>
+                            <span class="text-lg font-black">¥${item.price}</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-6">${item.description || '暂无描述'}</p>
+                        <button onclick="orderViaWhatsApp('${item.name}', ${item.price})" 
+                                class="w-full bg-black text-white py-4 rounded-2xl font-bold hover:bg-gray-800 transition-colors">
+                            立即下单
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 3. WhatsApp 下单逻辑
+        function orderViaWhatsApp(name, price) {
+            const message = `你好！我想订购：\n------------------\n🍔 菜品：${name}\n💰 价格：¥${price}\n------------------\n请问现在可以配送吗？`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${MY_PHONE}?text=${encodedMessage}`);
+        }
+
+        fetchMenu();
+    </script>
+</body>
+</html>
