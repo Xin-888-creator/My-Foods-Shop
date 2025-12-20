@@ -38,7 +38,7 @@
     <script>
         // --- 1. 配置信息 (确保这里的 Key 正确) ---
         const RAW_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
-        const RAW_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzZGhmdnlwYmJva2R3dm9vcmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTY3MjAsImV4cCI6MjA4MTc5MjcyMH0.Q5O2wdgrUL_d1JlD0TAMlTjIolwUctg4deXEFQ7pJ20"; 
+        const RAW_KEY = "这里重新贴入你那一长串eyJ开头的anon密钥"; 
         const MY_PHONE = "60128385889";
 
         const SB_URL = RAW_URL.replace(/[^\x20-\x7E]/g, "").trim();
@@ -115,4 +115,21 @@
                                 <h3 class="text-xl font-bold">${item.name}</h3>
                                 <span class="text-xl font-black text-orange-600">¥${item.price}</span>
                             </div>
-                            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">${item.
+                            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">${item.description || 'TASTY & FRESH'}</p>
+                            <button onclick="addToCart('${item.name}', ${item.price})" 
+                                    class="w-full bg-gray-100 text-black py-4 rounded-2xl font-bold hover:bg-black hover:text-white transition-all active:scale-95">
+                                加入购物车
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                alert("加载失败，请检查密钥配置。");
+            }
+        }
+
+        fetchMenu();
+    </script>
+</body>
+</html>
