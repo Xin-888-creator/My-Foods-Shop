@@ -36,12 +36,23 @@
 
         // 2. 获取数据并渲染
         async function fetchMenu() {
-            const { data: foods, error } = await supabase.from('foods').select('*');
-            
-            if (error) {
-                console.error('加载失败:', error);
-                return;
-            }
+    console.log("正在尝试连接数据库...");
+    const { data: foods, error } = await supabase.from('foods').select('*');
+    
+    if (error) {
+        // 如果报错，直接把错误弹出来，截图发给我
+        alert("发现错误！状态码：" + error.code + "\n信息：" + error.message);
+        console.error('详细错误:', error);
+        return;
+    }
+
+    if (!foods || foods.length === 0) {
+        alert("连接成功了，但是你的 foods 表里一条数据都没有，快去加菜！");
+        return;
+    }
+
+    // ... 下面是原来的渲染代码
+}
 
             const container = document.getElementById('food-container');
             container.innerHTML = foods.map(item => `
