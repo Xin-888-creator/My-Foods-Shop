@@ -27,8 +27,7 @@
             <ul class="space-y-3 text-gray-600 text-sm">
                 <li class="flex items-start"><span class="text-orange-500 mr-2">•</span> <span>以下均为商品大概价格，最终价格会在WhatsApp结算。</span></li>
                 <li class="flex items-start"><span class="text-orange-500 mr-2">•</span> <span>满300免配送费！</span></li>
-                <li class="flex items-start"><span class="text-orange-500 mr-2">•</span> <span>食材声明：所有食材均当天制作，保证新鲜。</span></li>
-                <li class="flex items-start"><span class="text-orange-500 mr-2">•</span> <span>支付方式：WhatsApp下单后支持 Touch'go/支付宝/微信支付,如选择支付宝/微信支付 会由当天汇率计算。</span></li>
+                <li class="flex items-start"><span class="text-orange-500 mr-2">•</span> <span>支付方式：WhatsApp下单后支持 Touch'go/支付宝/微信支付。</span></li>
             </ul>
         </div>
 
@@ -41,13 +40,9 @@
     <div id="cart-bar" onclick="toggleCartDetail()" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-black text-white rounded-3xl p-4 shadow-2xl z-[110] flex justify-between items-center hidden cursor-pointer">
         <div class="flex items-center gap-3">
             <div class="bg-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-[10px]" id="cart-count-badge">0</div>
-            <div>
-                <p id="cart-summary" class="text-lg font-bold">RM 0</p>
-            </div>
+            <div><p id="cart-summary" class="text-lg font-bold">RM 0</p></div>
         </div>
-        <button onclick="event.stopPropagation(); sendOrder()" class="bg-white text-black px-6 py-2 rounded-2xl font-black active:scale-95 transition-transform">
-            去结算
-        </button>
+        <button onclick="event.stopPropagation(); sendOrder()" class="bg-white text-black px-6 py-2 rounded-2xl font-black active:scale-95 transition-transform">去结算</button>
     </div>
 
     <div id="cart-overlay" onclick="toggleCartDetail()" class="fixed inset-0 bg-black/40 z-[105] hidden"></div>
@@ -71,6 +66,7 @@
         let cart = {}; 
         let menuData = []; 
 
+        // 核心：更新所有商品的按钮状态
         function updateUI() {
             menuData.forEach(item => {
                 const btnContainer = document.getElementById(`btn-container-${item.id}`);
@@ -78,28 +74,25 @@
 
                 const count = cart[item.name]?.count || 0;
                 if (count > 0) {
-                    // 修改：这里微调了样式，使其完全匹配截图中的“黑色长条”效果
                     btnContainer.innerHTML = `
-                        <div class="flex items-center justify-between w-full bg-black text-white py-3 rounded-[1.5rem] px-6 animate-in fade-in zoom-in duration-200">
-                            <button onclick="changeQty('${item.name}', -1, ${item.price})" class="text-2xl font-bold active:scale-75 transition-transform px-2">-</button>
+                        <div class="flex items-center justify-between w-full bg-black text-white py-3 rounded-[1.5rem] px-6">
+                            <button onclick="changeQty('${item.name}', -1, ${item.price})" class="text-2xl font-bold px-2">-</button>
                             <span class="font-bold text-lg">${count} 份</span>
-                            <button onclick="changeQty('${item.name}', 1, ${item.price})" class="text-2xl font-bold active:scale-75 transition-transform px-2">+</button>
+                            <button onclick="changeQty('${item.name}', 1, ${item.price})" class="text-2xl font-bold px-2">+</button>
                         </div>
                     `;
                 } else {
                     btnContainer.innerHTML = `
                         <button onclick="changeQty('${item.name}', 1, ${item.price})" 
-                                class="w-full bg-gray-100 text-black py-4 rounded-[1.5rem] font-bold hover:bg-black hover:text-white transition-all active:scale-95">
+                                class="w-full bg-gray-100 text-black py-4 rounded-[1.5rem] font-bold hover:bg-black hover:text-white">
                             加入购物车
                         </button>
                     `;
                 }
             });
 
+            // 更新底部条
             const cartBar = document.getElementById('cart-bar');
-            const summary = document.getElementById('cart-summary');
-            const badge = document.getElementById('cart-count-badge');
-            
             let totalCount = 0;
             let totalPrice = 0;
             for (let name in cart) {
@@ -109,21 +102,16 @@
 
             if (totalCount > 0) {
                 cartBar.classList.remove('hidden');
-                summary.innerText = `RM ${totalPrice}`;
-                badge.innerText = totalCount;
+                document.getElementById('cart-summary').innerText = `RM ${totalPrice}`;
+                document.getElementById('cart-count-badge').innerText = totalCount;
             } else {
                 cartBar.classList.add('hidden');
-                document.getElementById('cart-detail').classList.remove('active');
-                document.getElementById('cart-overlay').classList.add('hidden');
             }
-
             updateCartListUI();
         }
 
-        function changeQty(name, delta, price = null) {
-            if (!cart[name]) {
-                cart[name] = { price: price, count: 0 };
-            }
+        function changeQty(name, delta, price) {
+            if (!cart[name]) cart[name] = { price: price, count: 0 };
             cart[name].count += delta;
             if (cart[name].count <= 0) delete cart[name];
             updateUI();
@@ -135,40 +123,30 @@
             for (let name in cart) {
                 html += `
                     <div class="flex justify-between items-center border-b border-gray-50 pb-4">
-                        <div>
-                            <h4 class="font-bold">${name}</h4>
-                            <p class="text-orange-600 text-sm font-bold">RM ${cart[name].price * cart[name].count}</p>
-                        </div>
+                        <div><h4 class="font-bold">${name}</h4><p class="text-orange-600 text-sm font-bold">RM ${cart[name].price * cart[name].count}</p></div>
                         <div class="flex items-center gap-6 bg-gray-100 rounded-full px-4 py-2">
                             <button onclick="changeQty('${name}', -1, ${cart[name].price})" class="font-bold text-xl">-</button>
                             <span class="font-bold">${cart[name].count}</span>
                             <button onclick="changeQty('${name}', 1, ${cart[name].price})" class="font-bold text-xl">+</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
             listContainer.innerHTML = html || '<p class="text-gray-400 text-center py-10">购物车空空如也</p>';
         }
 
         function toggleCartDetail() {
-            const detail = document.getElementById('cart-detail');
-            const overlay = document.getElementById('cart-overlay');
-            detail.classList.toggle('active');
-            overlay.classList.toggle('hidden');
+            document.getElementById('cart-detail').classList.toggle('active');
+            document.getElementById('cart-overlay').classList.toggle('hidden');
         }
 
-        function clearCart() {
-            cart = {};
-            updateUI();
-        }
+        function clearCart() { cart = {}; updateUI(); }
 
         function sendOrder() {
             let orderText = "你好！我想订购以下菜品：\n\n";
             let totalPrice = 0;
             for (let name in cart) {
-                let itemTotal = cart[name].price * cart[name].count;
-                orderText += `✅ ${name} x${cart[name].count} (RM ${itemTotal})\n`;
-                totalPrice += itemTotal;
+                orderText += `✅ ${name} x${cart[name].count} (RM ${cart[name].price * cart[name].count})\n`;
+                totalPrice += cart[name].price * cart[name].count;
             }
             orderText += `\n💰 合计金额：RM ${totalPrice}\n📍 请问现在可以配送吗？`;
             window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(orderText)}`);
@@ -179,11 +157,10 @@
                 const { data: foods, error } = await supabaseClient.from('foods').select('*');
                 if (error) throw error;
                 menuData = foods; 
-                const container = document.getElementById('food-container');
-                container.innerHTML = foods.map(item => `
+                document.getElementById('food-container').innerHTML = foods.map(item => `
                     <div class="food-card bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-gray-100 p-2">
                         <div class="aspect-square rounded-[2rem] overflow-hidden bg-gray-100">
-                            <img src="${item.image_url || 'https://via.placeholder.com/400?text=Food'}" class="w-full h-full object-cover">
+                            <img src="${item.image_url || 'https://via.placeholder.com/400'}" class="w-full h-full object-cover">
                         </div>
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-2">
@@ -192,18 +169,13 @@
                             </div>
                             <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">${item.description || 'TASTY & FRESH'}</p>
                             <div id="btn-container-${item.id}">
-                                <button onclick="changeQty('${item.name}', 1, ${item.price})" 
-                                        class="w-full bg-gray-100 text-black py-4 rounded-[1.5rem] font-bold hover:bg-black hover:text-white transition-all active:scale-95">
-                                    加入购物车
-                                </button>
+                                <button onclick="changeQty('${item.name}', 1, ${item.price})" class="w-full bg-gray-100 text-black py-4 rounded-[1.5rem] font-bold">加入购物车</button>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    </div>`).join('');
                 updateUI();
             } catch (err) { console.error(err); }
         }
-
         fetchMenu();
     </script>
 </body>
