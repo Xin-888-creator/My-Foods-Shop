@@ -46,10 +46,10 @@
     </div>
 
     <div id="cart-overlay" onclick="toggleCartDetail()" class="fixed inset-0 bg-black/40 z-[105] hidden"></div>
-    <div id="cart-detail" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-[108] p-8 pb-32 max-h-[70vh] overflow-y-auto">
+    <div id="cart-detail" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-[108] p-8 pb-32 max-h-[70vh] overflow-y-auto shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-2xl font-black">已选商品</h3>
-            <button onclick="clearCart()" class="text-gray-400 text-sm">清空购物车</button>
+            <button onclick="clearCart()" class="text-gray-400 text-sm font-bold">清空购物车</button>
         </div>
         <div id="cart-list" class="space-y-6"></div>
     </div>
@@ -66,8 +66,9 @@
         let cart = {}; 
         let menuData = []; 
 
-        // 核心：更新所有商品的按钮状态
+        // 刷新所有 UI（列表按钮 + 底部条 + 购物车列表）
         function updateUI() {
+            // 1. 刷新商品展示区域的“药丸按钮”
             menuData.forEach(item => {
                 const btnContainer = document.getElementById(`btn-container-${item.id}`);
                 if (!btnContainer) return;
@@ -75,24 +76,23 @@
                 const count = cart[item.name]?.count || 0;
                 if (count > 0) {
                     btnContainer.innerHTML = `
-                        <div class="flex items-center justify-between w-full bg-black text-white py-3 rounded-[1.5rem] px-6">
-                            <button onclick="changeQty('${item.name}', -1, ${item.price})" class="text-2xl font-bold px-2">-</button>
+                        <div class="flex items-center justify-between w-full bg-black text-white py-3 rounded-full px-6 animate-in fade-in zoom-in duration-200">
+                            <button onclick="changeQty('${item.name}', -1, ${item.price})" class="text-2xl font-bold active:scale-75 transition-transform px-2">-</button>
                             <span class="font-bold text-lg">${count} 份</span>
-                            <button onclick="changeQty('${item.name}', 1, ${item.price})" class="text-2xl font-bold px-2">+</button>
+                            <button onclick="changeQty('${item.name}', 1, ${item.price})" class="text-2xl font-bold active:scale-75 transition-transform px-2">+</button>
                         </div>
                     `;
                 } else {
                     btnContainer.innerHTML = `
                         <button onclick="changeQty('${item.name}', 1, ${item.price})" 
-                                class="w-full bg-gray-100 text-black py-4 rounded-[1.5rem] font-bold hover:bg-black hover:text-white">
+                                class="w-full bg-gray-100 text-black py-4 rounded-full font-bold hover:bg-black hover:text-white transition-all active:scale-95">
                             加入购物车
                         </button>
                     `;
                 }
             });
 
-            // 更新底部条
-            const cartBar = document.getElementById('cart-bar');
+            // 2. 刷新底部结算条
             let totalCount = 0;
             let totalPrice = 0;
             for (let name in cart) {
@@ -100,14 +100,41 @@
                 totalPrice += cart[name].price * cart[name].count;
             }
 
+            const cartBar = document.getElementById('cart-bar');
             if (totalCount > 0) {
                 cartBar.classList.remove('hidden');
                 document.getElementById('cart-summary').innerText = `RM ${totalPrice}`;
                 document.getElementById('cart-count-badge').innerText = totalCount;
             } else {
                 cartBar.classList.add('hidden');
+                // 如果购物车空了，自动收起弹窗
+                document.getElementById('cart-detail').classList.remove('active');
+                document.getElementById('cart-overlay').classList.add('hidden');
             }
+
+            // 3. 刷新购物车列表中的“药丸按钮”
             updateCartListUI();
+        }
+
+        // 修改购物车列表，使其也呈现药丸样式
+        function updateCartListUI() {
+            const listContainer = document.getElementById('cart-list');
+            let html = '';
+            for (let name in cart) {
+                html += `
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-4">
+                        <div class="max-w-[50%]">
+                            <h4 class="font-bold text-base truncate">${name}</h4>
+                            <p class="text-orange-600 text-sm font-black">RM ${cart[name].price * cart[name].count}</p>
+                        </div>
+                        <div class="flex items-center justify-between bg-black text-white rounded-full px-4 py-2 w-32 shadow-lg">
+                            <button onclick="changeQty('${name}', -1, ${cart[name].price})" class="font-bold text-xl active:scale-75 transition-transform">-</button>
+                            <span class="font-bold text-sm">${cart[name].count} 份</span>
+                            <button onclick="changeQty('${name}', 1, ${cart[name].price})" class="font-bold text-xl active:scale-75 transition-transform">+</button>
+                        </div>
+                    </div>`;
+            }
+            listContainer.innerHTML = html || '<p class="text-gray-400 text-center py-10 font-bold">快去挑选美味吧~</p>';
         }
 
         function changeQty(name, delta, price) {
@@ -115,23 +142,6 @@
             cart[name].count += delta;
             if (cart[name].count <= 0) delete cart[name];
             updateUI();
-        }
-
-        function updateCartListUI() {
-            const listContainer = document.getElementById('cart-list');
-            let html = '';
-            for (let name in cart) {
-                html += `
-                    <div class="flex justify-between items-center border-b border-gray-50 pb-4">
-                        <div><h4 class="font-bold">${name}</h4><p class="text-orange-600 text-sm font-bold">RM ${cart[name].price * cart[name].count}</p></div>
-                        <div class="flex items-center gap-6 bg-gray-100 rounded-full px-4 py-2">
-                            <button onclick="changeQty('${name}', -1, ${cart[name].price})" class="font-bold text-xl">-</button>
-                            <span class="font-bold">${cart[name].count}</span>
-                            <button onclick="changeQty('${name}', 1, ${cart[name].price})" class="font-bold text-xl">+</button>
-                        </div>
-                    </div>`;
-            }
-            listContainer.innerHTML = html || '<p class="text-gray-400 text-center py-10">购物车空空如也</p>';
         }
 
         function toggleCartDetail() {
@@ -167,9 +177,9 @@
                                 <h3 class="text-xl font-bold">${item.name}</h3>
                                 <span class="text-xl font-black text-orange-600">RM ${item.price}</span>
                             </div>
-                            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">${item.description || 'TASTY & FRESH'}</p>
+                            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest line-clamp-2">${item.description || 'TASTY & FRESH'}</p>
                             <div id="btn-container-${item.id}">
-                                <button onclick="changeQty('${item.name}', 1, ${item.price})" class="w-full bg-gray-100 text-black py-4 rounded-[1.5rem] font-bold">加入购物车</button>
+                                <button onclick="changeQty('${item.name}', 1, ${item.price})" class="w-full bg-gray-100 text-black py-4 rounded-full font-bold">加入购物车</button>
                             </div>
                         </div>
                     </div>`).join('');
