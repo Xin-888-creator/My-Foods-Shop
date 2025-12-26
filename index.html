@@ -71,11 +71,10 @@
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
         let cart = {}; 
-        let menuData = []; // 存储从数据库拿到的原始数据
+        let menuData = []; 
 
-        // --- 核心逻辑：更新按钮状态和UI ---
         function updateUI() {
-            // 1. 更新菜单中的按钮
+            // 修复点：遍历 menuData 确保每个商品的按钮容器都被更新
             menuData.forEach(item => {
                 const btnContainer = document.getElementById(`btn-container-${item.id}`);
                 if (!btnContainer) return;
@@ -83,10 +82,10 @@
                 const count = cart[item.name]?.count || 0;
                 if (count > 0) {
                     btnContainer.innerHTML = `
-                        <div class="flex items-center justify-between w-full bg-black text-white py-3 rounded-2xl px-4">
-                            <button onclick="changeQty('${item.name}', -1)" class="w-8 h-8 flex items-center justify-center text-2xl font-bold">-</button>
+                        <div class="flex items-center justify-between w-full bg-black text-white py-3 rounded-2xl px-4 animate-in fade-in zoom-in duration-200">
+                            <button onclick="changeQty('${item.name}', -1, ${item.price})" class="w-8 h-8 flex items-center justify-center text-2xl font-bold active:scale-75 transition-transform">-</button>
                             <span class="font-bold">${count} 份</span>
-                            <button onclick="changeQty('${item.name}', 1)" class="w-8 h-8 flex items-center justify-center text-2xl font-bold">+</button>
+                            <button onclick="changeQty('${item.name}', 1, ${item.price})" class="w-8 h-8 flex items-center justify-center text-2xl font-bold active:scale-75 transition-transform">+</button>
                         </div>
                     `;
                 } else {
@@ -99,7 +98,6 @@
                 }
             });
 
-            // 2. 更新底部购物车条
             const cartBar = document.getElementById('cart-bar');
             const summary = document.getElementById('cart-summary');
             const badge = document.getElementById('cart-count-badge');
@@ -121,7 +119,6 @@
                 document.getElementById('cart-overlay').classList.add('hidden');
             }
 
-            // 3. 更新详情列表
             updateCartListUI();
         }
 
@@ -145,14 +142,14 @@
                             <p class="text-orange-600 text-sm font-bold">RM ${cart[name].price * cart[name].count}</p>
                         </div>
                         <div class="flex items-center gap-4 bg-gray-100 rounded-xl px-3 py-1">
-                            <button onclick="changeQty('${name}', -1)" class="font-bold text-lg">-</button>
+                            <button onclick="changeQty('${name}', -1, ${cart[name].price})" class="font-bold text-lg">-</button>
                             <span class="font-bold">${cart[name].count}</span>
-                            <button onclick="changeQty('${name}', 1)" class="font-bold text-lg">+</button>
+                            <button onclick="changeQty('${name}', 1, ${cart[name].price})" class="font-bold text-lg">+</button>
                         </div>
                     </div>
                 `;
             }
-            listContainer.innerHTML = html || '<p class="text-gray-400">购物车空空如也</p>';
+            listContainer.innerHTML = html || '<p class="text-gray-400 text-center py-10">购物车空空如也</p>';
         }
 
         function toggleCartDetail() {
@@ -183,7 +180,7 @@
             try {
                 const { data: foods, error } = await supabaseClient.from('foods').select('*');
                 if (error) throw error;
-                menuData = foods;
+                menuData = foods; // 这里存储了所有商品数据
                 const container = document.getElementById('food-container');
                 container.innerHTML = foods.map(item => `
                     <div class="food-card bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-gray-100 p-2">
@@ -205,7 +202,7 @@
                         </div>
                     </div>
                 `).join('');
-                updateUI();
+                updateUI(); // 初始渲染后运行一次 UI 更新
             } catch (err) { console.error(err); }
         }
 
