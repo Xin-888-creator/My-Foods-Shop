@@ -11,24 +11,50 @@
         #cart-bar { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 pb-32"> <header class="sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+<body class="bg-gray-50 text-gray-900 pb-32"> 
+    <header class="sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-black tracking-tighter">闽南小吃.</h1>
+            <h1 class="text-5xl font-black tracking-tighter text-black">闽南小吃.</h1>
             <div class="bg-black text-white px-4 py-1 rounded-full text-xs font-bold">营业中</div>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-10">
         <h2 class="text-4xl font-bold mb-8 italic">菜单</h2>
-        <div id="food-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <div id="food-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             <p class="text-gray-400">正在准备新鲜食材...</p>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
+            <h3 class="text-xl font-bold mb-4 flex items-center">
+                <span class="mr-2">📝</span> 温馨提示
+            </h3>
+            <ul class="space-y-3 text-gray-600 text-sm">
+                <li class="flex items-start">
+                    <span class="text-orange-500 mr-2">•</span> 
+                    <span>以下均为商品大概价格，最终价格会在Whats app结算。</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-orange-500 mr-2">•</span> 
+                    <span>满300免配送费！</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-orange-500 mr-2">•</span> 
+                    <span>食材声明：所有食材均当天制作，保证新鲜。</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-orange-500 mr-2">•</span> 
+                    <span>支付方式：WhatsApp 下单后支持 Touch'go/支付宝/微信支付。</span>
+                </li>
+            </ul>
         </div>
     </main>
 
     <div id="cart-bar" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-black text-white rounded-3xl p-4 shadow-2xl z-[100] flex justify-between items-center hidden">
         <div>
             <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">已选择菜品</p>
-            <p id="cart-summary" class="text-lg font-bold">0 份菜品 · ¥0</p>
+            <p id="cart-summary" class="text-lg font-bold">0 份菜品 · RM 0</p>
         </div>
         <button onclick="sendOrder()" class="bg-white text-black px-8 py-3 rounded-2xl font-black active:scale-95 transition-transform">
             去结算
@@ -36,7 +62,7 @@
     </div>
 
     <script>
-        // --- 1. 配置信息 (确保这里的 Key 正确) ---
+        // --- 1. 配置信息 ---
         const RAW_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
         const RAW_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzZGhmdnlwYmJva2R3dm9vcmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTY3MjAsImV4cCI6MjA4MTc5MjcyMH0.Q5O2wdgrUL_d1JlD0TAMlTjIolwUctg4deXEFQ7pJ20"; 
         const MY_PHONE = "60128385889";
@@ -46,7 +72,7 @@
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
         // --- 2. 购物车逻辑 ---
-        let cart = {}; // 存储格式: { "菜名": { price: 35, count: 1 } }
+        let cart = {}; 
 
         function addToCart(name, price) {
             if (cart[name]) {
@@ -71,7 +97,8 @@
 
             if (totalCount > 0) {
                 cartBar.classList.remove('hidden');
-                summary.innerText = `${totalCount} 份菜品 · ¥${totalPrice}`;
+                // 修改4：¥ 改为 RM
+                summary.innerText = `${totalCount} 份菜品 · RM ${totalPrice}`;
             } else {
                 cartBar.classList.add('hidden');
             }
@@ -84,11 +111,13 @@
 
             for (let name in cart) {
                 let itemTotal = cart[name].price * cart[name].count;
-                orderText += `✅ ${name} x${cart[name].count} (¥${itemTotal})\n`;
+                // 修改5：¥ 改为 RM
+                orderText += `✅ ${name} x${cart[name].count} (RM ${itemTotal})\n`;
                 totalPrice += itemTotal;
             }
 
-            orderText += `\n------------------\n💰 合计金额：¥${totalPrice}\n------------------\n📍 请问现在可以配送吗？`;
+            // 修改6：¥ 改为 RM
+            orderText += `\n------------------\n💰 合计金额：RM ${totalPrice}\n------------------\n📍 请问现在可以配送吗？`;
             
             window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(orderText)}`);
         }
@@ -113,7 +142,7 @@
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-2">
                                 <h3 class="text-xl font-bold">${item.name}</h3>
-                                <span class="text-xl font-black text-orange-600">¥${item.price}</span>
+                                <span class="text-xl font-black text-orange-600">RM ${item.price}</span>
                             </div>
                             <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">${item.description || 'TASTY & FRESH'}</p>
                             <button onclick="addToCart('${item.name}', ${item.price})" 
