@@ -70,7 +70,7 @@
 
 <script>
     const RAW_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
-    const RAW_KEY = "你的KEY";
+    const RAW_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzZGhmdnlwYmJva2R3dm9vcmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTY3MjAsImV4cCI6MjA4MTc5MjcyMH0.Q5O2wdgrUL_d1JlD0TAMlTjIolwUctg4deXEFQ7pJ20";
     const MY_PHONE = "60128385889";
 
     const supabaseClient = supabase.createClient(RAW_URL, RAW_KEY);
@@ -85,34 +85,40 @@
             totalPrice += cart[name].price * cart[name].count;
         }
 
-        const cartBar = document.getElementById('cart-bar');
+        const bar = document.getElementById('cart-bar');
         if (totalCount > 0) {
-            cartBar.classList.remove('hidden');
+            bar.classList.remove('hidden');
             document.getElementById('cart-summary').innerText = `RM ${totalPrice}`;
             document.getElementById('cart-count-badge').innerText = totalCount;
         } else {
-            cartBar.classList.add('hidden');
+            bar.classList.add('hidden');
+            document.getElementById('cart-detail').classList.remove('active');
+            document.getElementById('cart-overlay').classList.add('hidden');
         }
 
         updateCartListUI();
-        updateFoodControls();   // ⭐ 关键
+        updateFoodControls();
     }
 
     function updateCartListUI() {
         const list = document.getElementById('cart-list');
-        list.innerHTML = Object.keys(cart).map(name => `
-            <div class="flex justify-between items-center">
-                <div>
-                    <h4 class="font-bold">${name}</h4>
-                    <p class="text-orange-600 font-black">RM ${cart[name].price * cart[name].count}</p>
+        list.innerHTML = Object.keys(cart).length
+            ? Object.keys(cart).map(name => `
+                <div class="flex justify-between items-center border-b pb-4">
+                    <div>
+                        <h4 class="font-bold">${name}</h4>
+                        <p class="text-orange-600 font-black">
+                            RM ${cart[name].price * cart[name].count}
+                        </p>
+                    </div>
+                    <div class="flex items-center bg-black text-white rounded-full px-4 py-2 w-32 justify-between">
+                        <button onclick="changeQty('${name}', -1, ${cart[name].price})">-</button>
+                        <span>${cart[name].count}</span>
+                        <button onclick="changeQty('${name}', 1, ${cart[name].price})">+</button>
+                    </div>
                 </div>
-                <div class="flex items-center bg-black text-white rounded-full px-4 py-2 w-32">
-                    <button onclick="changeQty('${name}', -1, ${cart[name].price})">-</button>
-                    <span>${cart[name].count}</span>
-                    <button onclick="changeQty('${name}', 1, ${cart[name].price})">+</button>
-                </div>
-            </div>
-        `).join('');
+            `).join('')
+            : '<p class="text-gray-400 text-center py-10 font-bold">快去挑选美味吧~</p>';
     }
 
     function changeQty(name, delta, price) {
@@ -129,16 +135,16 @@
 
             if (cart[name]) {
                 el.innerHTML = `
-                    <div class="flex items-center justify-between bg-black text-white rounded-full px-4 py-3">
+                    <div class="flex items-center justify-between bg-black text-white rounded-full px-4 py-3 shadow-lg">
                         <button onclick="changeQty('${name}', -1, ${price})">-</button>
-                        <span>${cart[name].count} 份</span>
+                        <span class="font-bold">${cart[name].count} 份</span>
                         <button onclick="changeQty('${name}', 1, ${price})">+</button>
                     </div>
                 `;
             } else {
                 el.innerHTML = `
                     <button onclick="changeQty('${name}', 1, ${price})"
-                        class="w-full bg-gray-100 py-4 rounded-full font-bold">
+                        class="w-full bg-gray-100 py-4 rounded-full font-bold hover:bg-black hover:text-white">
                         加入购物车
                     </button>
                 `;
@@ -147,10 +153,15 @@
     }
 
     async function fetchMenu() {
-        const { data } = await supabaseClient.from('foods').select('*');
+        const { data, error } = await supabaseClient.from('foods').select('*');
+        if (error) {
+            console.error(error);
+            return;
+        }
+
         document.getElementById('food-container').innerHTML = data.map(item => `
-            <div class="food-card bg-white rounded-[2.5rem] p-2 shadow">
-                <div class="aspect-square overflow-hidden rounded-[2rem]">
+            <div class="food-card bg-white rounded-[2.5rem] p-2 shadow border">
+                <div class="aspect-square rounded-[2rem] overflow-hidden">
                     <img src="${item.image_url}" class="w-full h-full object-cover">
                 </div>
                 <div class="p-6">
@@ -167,14 +178,24 @@
         updateFoodControls();
     }
 
+    function toggleCartDetail() {
+        document.getElementById('cart-detail').classList.toggle('active');
+        document.getElementById('cart-overlay').classList.toggle('hidden');
+    }
+
+    function clearCart() {
+        cart = {};
+        updateUI();
+    }
+
     function sendOrder() {
-        let text = "我要下单：\n";
+        let text = "你好！我想订购：\n\n";
         let total = 0;
         for (let name in cart) {
-            text += `${name} x${cart[name].count}\n`;
+            text += `✅ ${name} x${cart[name].count}\n`;
             total += cart[name].price * cart[name].count;
         }
-        text += `合计 RM ${total}`;
+        text += `\n💰 合计 RM ${total}`;
         window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(text)}`);
     }
 
