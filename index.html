@@ -1,165 +1,54 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>闽南小吃</title>
+<h2 class="text-4xl font-bold mb-8 italic">菜单</h2>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        .food-card:hover { transform: translateY(-5px); }
-        #cart-bar { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        #cart-detail { transition: transform 0.3s ease-out; transform: translateY(100%); }
-        #cart-detail.active { transform: translateY(0); }
-    </style>
-</head>
-
-<body class="bg-gray-50 text-gray-900 pb-32">
-
-<header class="sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-    <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-5xl font-black tracking-tighter text-black">闽南小吃.</h1>
-        <div class="bg-black text-white px-4 py-1 rounded-full text-xs font-bold">营业中</div>
+    <div class="flex gap-4 mb-8">
+        <button onclick="filterMenu('小吃')" id="tab-小吃" class="category-tab px-8 py-2 rounded-full font-bold bg-black text-white transition-all">小吃</button>
+        <button onclick="filterMenu('干货')" id="tab-干货" class="category-tab px-8 py-2 rounded-full font-bold bg-gray-200 text-gray-600 transition-all">干货</button>
     </div>
-</header>
-
-<main class="max-w-5xl mx-auto px-6 py-8">
-
-    <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm mb-12">
-        <h3 class="text-xl font-bold mb-4 flex items-center">📝 温馨提示</h3>
-        <ul class="space-y-3 text-gray-600 text-sm">
-            <li>• 以下均为商品大概价格，最终价格会在 WhatsApp 结算</li>
-            <li>• 满 300 免配送费</li>
-            <li>• 支付方式：Touch'n Go / 支付宝 / 微信</li>
-        </ul>
-    </div>
-
-    <h2 class="text-4xl font-bold mb-8 italic">菜单</h2>
 
     <div id="food-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         <p class="text-gray-400">正在准备新鲜食材...</p>
     </div>
 
-</main>
-
-<!-- 底部购物车 -->
-<div id="cart-bar" onclick="toggleCartDetail()"
-     class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-black text-white rounded-3xl p-4 shadow-2xl z-[110] flex justify-between items-center hidden cursor-pointer">
-    <div class="flex items-center gap-3">
-        <div class="bg-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-[10px]" id="cart-count-badge">0</div>
-        <p id="cart-summary" class="text-lg font-bold">RM 0</p>
-    </div>
-    <button onclick="event.stopPropagation(); sendOrder()"
-            class="bg-white text-black px-6 py-2 rounded-2xl font-black">
-        去结算
-    </button>
-</div>
-
-<div id="cart-overlay" onclick="toggleCartDetail()" class="fixed inset-0 bg-black/40 hidden z-[105]"></div>
-
-<div id="cart-detail"
-     class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] z-[108] p-8 pb-32 max-h-[70vh] overflow-y-auto">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-black">已选商品</h3>
-        <button onclick="clearCart()" class="text-gray-400 text-sm font-bold">清空购物车</button>
-    </div>
-    <div id="cart-list" class="space-y-6"></div>
-</div>
-
 <script>
-    const RAW_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
-    const RAW_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzZGhmdnlwYmJva2R3dm9vcmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTY3MjAsImV4cCI6MjA4MTc5MjcyMH0.Q5O2wdgrUL_d1JlD0TAMlTjIolwUctg4deXEFQ7pJ20";
-    const MY_PHONE = "60128385889";
-
+    // ... 前面的变量保持不动 ...
     const supabaseClient = supabase.createClient(RAW_URL, RAW_KEY);
     let cart = {};
+    let allFoodData = []; // 新增：保存下载的所有数据
 
-    function updateUI() {
-        let totalCount = 0;
-        let totalPrice = 0;
+    // ... updateUI, updateCartListUI, changeQty, updateFoodControls 保持不动 ...
 
-        for (let name in cart) {
-            totalCount += cart[name].count;
-            totalPrice += cart[name].price * cart[name].count;
-        }
-
-        const bar = document.getElementById('cart-bar');
-        if (totalCount > 0) {
-            bar.classList.remove('hidden');
-            document.getElementById('cart-summary').innerText = `RM ${totalPrice}`;
-            document.getElementById('cart-count-badge').innerText = totalCount;
-        } else {
-            bar.classList.add('hidden');
-            document.getElementById('cart-detail').classList.remove('active');
-            document.getElementById('cart-overlay').classList.add('hidden');
-        }
-
-        updateCartListUI();
-        updateFoodControls();
-    }
-
-    function updateCartListUI() {
-        const list = document.getElementById('cart-list');
-        list.innerHTML = Object.keys(cart).length
-            ? Object.keys(cart).map(name => `
-                <div class="flex justify-between items-center border-b pb-4">
-                    <div>
-                        <h4 class="font-bold">${name}</h4>
-                        <p class="text-orange-600 font-black">
-                            RM ${cart[name].price * cart[name].count}
-                        </p>
-                    </div>
-                    <div class="flex items-center bg-black text-white rounded-full px-4 py-2 w-32 justify-between">
-                        <button onclick="changeQty('${name}', -1, ${cart[name].price})">-</button>
-                        <span>${cart[name].count}</span>
-                        <button onclick="changeQty('${name}', 1, ${cart[name].price})">+</button>
-                    </div>
-                </div>
-            `).join('')
-            : '<p class="text-gray-400 text-center py-10 font-bold">快去挑选美味吧~</p>';
-    }
-
-    function changeQty(name, delta, price) {
-        if (!cart[name]) cart[name] = { price, count: 0 };
-        cart[name].count += delta;
-        if (cart[name].count <= 0) delete cart[name];
-        updateUI();
-    }
-
-    function updateFoodControls() {
-        document.querySelectorAll('[data-food]').forEach(el => {
-            const name = el.dataset.food;
-            const price = el.dataset.price;
-
-            if (cart[name]) {
-                el.innerHTML = `
-                    <div class="flex items-center justify-between bg-black text-white rounded-full px-4 py-3 shadow-lg">
-                        <button onclick="changeQty('${name}', -1, ${price})">-</button>
-                        <span class="font-bold">${cart[name].count} 份</span>
-                        <button onclick="changeQty('${name}', 1, ${price})">+</button>
-                    </div>
-                `;
-            } else {
-                el.innerHTML = `
-                    <button onclick="changeQty('${name}', 1, ${price})"
-                        class="w-full bg-gray-100 py-4 rounded-full font-bold hover:bg-black hover:text-white">
-                        加入购物车
-                    </button>
-                `;
-            }
-        });
-    }
-
+    // 修改此函数：获取数据并保存到全局变量
     async function fetchMenu() {
         const { data, error } = await supabaseClient.from('foods').select('*');
         if (error) {
             console.error(error);
             return;
         }
+        allFoodData = data; // 存下所有数据
+        filterMenu('小吃'); // 默认进场显示“小吃”
+    }
 
-        document.getElementById('food-container').innerHTML = data.map(item => `
+    // 新增函数：点击切换分类
+    function filterMenu(category) {
+        // 1. 切换按钮的高亮样式
+        document.querySelectorAll('.category-tab').forEach(btn => {
+            btn.classList.remove('bg-black', 'text-white');
+            btn.classList.add('bg-gray-200', 'text-gray-600');
+        });
+        document.getElementById(`tab-${category}`).classList.remove('bg-gray-200', 'text-gray-600');
+        document.getElementById(`tab-${category}`).classList.add('bg-black', 'text-white');
+
+        // 2. 根据分类过滤数据
+        const filteredData = allFoodData.filter(item => item.category === category);
+        
+        // 3. 渲染过滤后的商品（保持你原本的 HTML 结构完全一致）
+        const container = document.getElementById('food-container');
+        if (filteredData.length === 0) {
+            container.innerHTML = `<p class="text-gray-400 col-span-full py-10">该分类下暂无商品...</p>`;
+            return;
+        }
+
+        container.innerHTML = filteredData.map(item => `
             <div class="food-card bg-white rounded-[2.5rem] p-2 shadow border">
                 <div class="aspect-square rounded-[2rem] overflow-hidden">
                     <img src="${item.image_url}" class="w-full h-full object-cover">
@@ -175,32 +64,11 @@
             </div>
         `).join('');
 
+        // 4. 必须调用这个来恢复加减号状态
         updateFoodControls();
     }
 
-    function toggleCartDetail() {
-        document.getElementById('cart-detail').classList.toggle('active');
-        document.getElementById('cart-overlay').classList.toggle('hidden');
-    }
-
-    function clearCart() {
-        cart = {};
-        updateUI();
-    }
-
-    function sendOrder() {
-        let text = "你好！我想订购：\n\n";
-        let total = 0;
-        for (let name in cart) {
-            text += `✅ ${name} x${cart[name].count}\n`;
-            total += cart[name].price * cart[name].count;
-        }
-        text += `\n💰 合计 RM ${total}`;
-        window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(text)}`);
-    }
+    // ... 后面的 toggleCartDetail, clearCart, sendOrder 保持不动 ...
 
     fetchMenu();
 </script>
-
-</body>
-</html>
