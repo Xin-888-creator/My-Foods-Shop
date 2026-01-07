@@ -13,7 +13,6 @@
         #cart-bar { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         #cart-detail { transition: transform 0.3s ease-out; transform: translateY(100%); }
         #cart-detail.active { transform: translateY(0); }
-        /* 这里的 transition 让分类按钮切换更顺滑 */
         .category-tab { transition: all 0.2s ease; }
     </style>
 </head>
@@ -58,7 +57,7 @@
         <p id="cart-summary" class="text-lg font-bold">RM 0</p>
     </div>
     <button onclick="event.stopPropagation(); sendOrder()"
-            class="bg-white text-black px-6 py-2 rounded-2xl font-black">
+            class="bg-white text-black px-6 py-2 rounded-2xl font-black active:scale-95 transition-transform">
         去结算
     </button>
 </div>
@@ -81,7 +80,7 @@
 
     const supabaseClient = supabase.createClient(RAW_URL, RAW_KEY);
     let cart = {};
-    let allFoodData = []; // 用于存储从数据库下载的所有商品
+    let allFoodData = []; 
 
     function updateUI() {
         let totalCount = 0;
@@ -95,7 +94,7 @@
         const bar = document.getElementById('cart-bar');
         if (totalCount > 0) {
             bar.classList.remove('hidden');
-            document.getElementById('cart-summary').innerText = `RM ${totalPrice}`;
+            document.getElementById('cart-summary').innerText = `RM ${totalPrice.toFixed(2)}`;
             document.getElementById('cart-count-badge').innerText = totalCount;
         } else {
             bar.classList.add('hidden');
@@ -114,14 +113,12 @@
                 <div class="flex justify-between items-center border-b pb-4">
                     <div>
                         <h4 class="font-bold">${name}</h4>
-                        <p class="text-orange-600 font-black">
-                            RM ${cart[name].price * cart[name].count}
-                        </p>
+                        <p class="text-orange-600 font-black">RM ${(cart[name].price * cart[name].count).toFixed(2)}</p>
                     </div>
-                    <div class="flex items-center bg-black text-white rounded-full px-4 py-2 w-32 justify-between">
-                        <button onclick="changeQty('${name}', -1, ${cart[name].price})">-</button>
-                        <span>${cart[name].count}</span>
-                        <button onclick="changeQty('${name}', 1, ${cart[name].price})">+</button>
+                    <div class="flex items-center bg-black text-white rounded-full px-4 py-2 w-32 justify-between shadow-lg">
+                        <button class="font-bold text-xl px-2" onclick="changeQty('${name}', -1, ${cart[name].price})">-</button>
+                        <span class="font-bold">${cart[name].count}</span>
+                        <button class="font-bold text-xl px-2" onclick="changeQty('${name}', 1, ${cart[name].price})">+</button>
                     </div>
                 </div>
             `).join('')
@@ -142,16 +139,16 @@
 
             if (cart[name]) {
                 el.innerHTML = `
-                    <div class="flex items-center justify-between bg-black text-white rounded-full px-4 py-3 shadow-lg">
-                        <button onclick="changeQty('${name}', -1, ${price})">-</button>
+                    <div class="flex items-center justify-between bg-black text-white rounded-full px-4 py-3 shadow-lg animate-in fade-in zoom-in duration-200">
+                        <button class="font-bold text-xl px-2" onclick="changeQty('${name}', -1, ${price})">-</button>
                         <span class="font-bold">${cart[name].count} 份</span>
-                        <button onclick="changeQty('${name}', 1, ${price})">+</button>
+                        <button class="font-bold text-xl px-2" onclick="changeQty('${name}', 1, ${price})">+</button>
                     </div>
                 `;
             } else {
                 el.innerHTML = `
                     <button onclick="changeQty('${name}', 1, ${price})"
-                        class="w-full bg-gray-100 py-4 rounded-full font-bold hover:bg-black hover:text-white">
+                        class="w-full bg-gray-100 py-4 rounded-full font-bold hover:bg-black hover:text-white transition-all active:scale-95">
                         加入购物车
                     </button>
                 `;
@@ -159,9 +156,9 @@
         });
     }
 
-    // 分类筛选功能
+    // 核心筛选与渲染逻辑
     function filterMenu(category) {
-        // 更新按钮视觉状态
+        // 切换按钮样式
         document.querySelectorAll('.category-tab').forEach(btn => {
             btn.classList.remove('bg-black', 'text-white');
             btn.classList.add('bg-gray-200', 'text-gray-600');
@@ -169,10 +166,14 @@
         document.getElementById(`tab-${category}`).classList.remove('bg-gray-200', 'text-gray-600');
         document.getElementById(`tab-${category}`).classList.add('bg-black', 'text-white');
 
-        // 筛选数据
-        const filteredData = allFoodData.filter(item => item.category === category);
+        // 筛选数据（兼容处理：如果某项没有设置 category，默认归类为小吃）
+        const filteredData = allFoodData.filter(item => {
+            if (category === '小吃') {
+                return !item.category || item.category === '小吃';
+            }
+            return item.category === category;
+        });
         
-        // 渲染页面
         const container = document.getElementById('food-container');
         if (filteredData.length === 0) {
             container.innerHTML = `<p class="text-gray-400 col-span-full text-center py-10 font-bold">暂无${category}商品...</p>`;
@@ -180,16 +181,16 @@
         }
 
         container.innerHTML = filteredData.map(item => `
-            <div class="food-card bg-white rounded-[2.5rem] p-2 shadow border">
-                <div class="aspect-square rounded-[2rem] overflow-hidden">
-                    <img src="${item.image_url}" class="w-full h-full object-cover">
+            <div class="food-card bg-white rounded-[2.5rem] p-2 shadow border transition-transform">
+                <div class="aspect-square rounded-[2rem] overflow-hidden bg-gray-50">
+                    <img src="${item.image_url}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400?text=美味筹备中'">
                 </div>
                 <div class="p-6">
-                    <div class="flex justify-between mb-2">
-                        <h3 class="font-bold">${item.name}</h3>
-                        <span class="text-orange-600 font-black">RM ${item.price}</span>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">${item.name}</h3>
+                        <span class="text-orange-600 font-black text-lg">RM ${item.price}</span>
                     </div>
-                    <p class="text-xs text-gray-400 mb-4">${item.description || ''}</p>
+                    <p class="text-xs text-gray-400 mb-4 h-8 overflow-hidden line-clamp-2">${item.description || ''}</p>
                     <div data-food="${item.name}" data-price="${item.price}"></div>
                 </div>
             </div>
@@ -199,13 +200,19 @@
     }
 
     async function fetchMenu() {
-        const { data, error } = await supabaseClient.from('foods').select('*');
-        if (error) {
-            console.error(error);
-            return;
+        try {
+            // 获取数据并按 sort_order 升序排列
+            const { data, error } = await supabaseClient
+                .from('foods')
+                .select('*')
+                .order('sort_order', { ascending: true });
+
+            if (error) throw error;
+            allFoodData = data; 
+            filterMenu('小吃'); 
+        } catch (err) {
+            console.error("加载失败:", err);
         }
-        allFoodData = data; 
-        filterMenu('小吃'); // 初始化时默认显示“小吃”
     }
 
     function toggleCartDetail() {
@@ -222,10 +229,10 @@
         let text = "你好！我想订购：\n\n";
         let total = 0;
         for (let name in cart) {
-            text += `✅ ${name} x${cart[name].count}\n`;
+            text += `✅ ${name} x${cart[name].count} (RM ${(cart[name].price * cart[name].count).toFixed(2)})\n`;
             total += cart[name].price * cart[name].count;
         }
-        text += `\n💰 合计 RM ${total}`;
+        text += `\n💰 合计 RM ${total.toFixed(2)}`;
         window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(text)}`);
     }
 
