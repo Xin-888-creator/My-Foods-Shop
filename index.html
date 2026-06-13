@@ -198,14 +198,41 @@
 
     <div class="cart-scroll flex-1 overflow-y-auto px-5 py-4">
         <div id="cart-list" class="space-y-3"></div>
+
+        <section class="mt-4 rounded-[26px] bg-neutral-50 p-4 ring-1 ring-neutral-100" aria-labelledby="customer-info-title">
+            <h4 id="customer-info-title" class="text-base font-black text-neutral-950">下单信息（选填）</h4>
+            <div class="mt-3 space-y-3">
+                <label class="block text-sm font-bold text-neutral-600">姓名
+                    <input id="customer-name" type="text" autocomplete="name" placeholder="例如：陈先生 / 王小姐" class="mt-1.5 min-h-12 w-full rounded-2xl border-0 bg-white px-4 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                </label>
+                <label class="block text-sm font-bold text-neutral-600">联系电话
+                    <input id="customer-phone" type="tel" autocomplete="tel" placeholder="例如：012-3456789" class="mt-1.5 min-h-12 w-full rounded-2xl border-0 bg-white px-4 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                </label>
+                <label class="block text-sm font-bold text-neutral-600">地址 / 区域
+                    <input id="customer-address" type="text" autocomplete="street-address" placeholder="例如：Desa ParkCity / Mont Kiara" class="mt-1.5 min-h-12 w-full rounded-2xl border-0 bg-white px-4 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                </label>
+                <label class="block text-sm font-bold text-neutral-600">备注
+                    <textarea id="customer-remark" rows="3" placeholder="例如：不要辣、几点送、其他要求" class="mt-1.5 w-full resize-none rounded-2xl border-0 bg-white px-4 py-3 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400"></textarea>
+                </label>
+            </div>
+        </section>
     </div>
 
     <div class="shrink-0 border-t border-neutral-100 bg-white px-5 pb-5 pt-4">
+        <section class="mb-3 rounded-2xl bg-neutral-50 p-3 ring-1 ring-neutral-100" aria-label="免配送费进度">
+            <div class="mb-2 flex items-center justify-between gap-3">
+                <span class="text-xs font-black text-neutral-500">满 RM300 免配送费</span>
+                <span id="free-delivery-text" class="shrink-0 text-xs font-black text-orange-600">还差 RM 300.00 免配送费</span>
+            </div>
+            <div class="h-2.5 overflow-hidden rounded-full bg-neutral-200">
+                <div id="free-delivery-progress" class="h-full rounded-full bg-orange-500 transition-all duration-300 ease-out" style="width: 0%"></div>
+            </div>
+        </section>
         <div class="mb-2 flex items-center justify-between">
             <span class="text-sm font-bold text-neutral-500">商品小计</span>
             <span id="cart-subtotal" class="text-xl font-black text-orange-600">RM 0.00</span>
         </div>
-        <p class="mb-3 text-xs font-medium leading-relaxed text-neutral-400">按去结算会自动跳转至 WhatsApp 向卖家下单</p>
+        <p class="mb-3 text-xs font-medium leading-relaxed text-neutral-400">按去结算会自动跳转至 WhatsApp 向卖家下单，免配送费进度仅作提醒</p>
         <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-orange-600 px-5 py-4 text-base font-black text-white shadow-xl shadow-orange-600/25 active:scale-[0.99]">
             <span>去 WhatsApp 结算</span>
             <span class="text-lg">➜</span>
@@ -217,6 +244,7 @@
     const RAW_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
     const RAW_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzZGhmdnlwYmJva2R3dm9vcmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTY3MjAsImV4cCI6MjA4MTc5MjcyMH0.Q5O2wdgrUL_d1JlD0TAMlTjIolwUctg4deXEFQ7pJ20";
     const MY_PHONE = "601116867588";
+    const FREE_DELIVERY_THRESHOLD = 300;
 
     const supabaseClient = supabase.createClient(RAW_URL, RAW_KEY);
     let cart = {};
@@ -241,12 +269,44 @@
             .replace(/'/g, '&#039;');
     }
 
+    function trackEvent(eventName, params = {}) {
+        if (typeof gtag === 'function') {
+            gtag('event', eventName, params);
+        }
+    }
+
     function getCartTotals() {
-        return Object.values(cart).reduce((totals, item) => {
-            totals.count += item.count;
-            totals.price += Number(item.price) * item.count;
-            return totals;
-        }, { count: 0, price: 0 });
+        let totalCount = 0;
+        let totalPrice = 0;
+
+        Object.values(cart).forEach(item => {
+            totalCount += item.count;
+            totalPrice += Number(item.price) * item.count;
+        });
+
+        return { totalCount, totalPrice };
+    }
+
+    function getFreeDeliveryInfo(totalPrice) {
+        const remaining = Math.max(FREE_DELIVERY_THRESHOLD - totalPrice, 0);
+        const progress = Math.min(totalPrice / FREE_DELIVERY_THRESHOLD, 1) * 100;
+        const reached = totalPrice >= FREE_DELIVERY_THRESHOLD;
+
+        return { remaining, progress, reached };
+    }
+
+    function getFreeDeliveryText(totalPrice) {
+        const info = getFreeDeliveryInfo(totalPrice);
+        return info.reached ? '已享受免配送费' : `还差 ${formatRM(info.remaining)} 免配送费`;
+    }
+
+    function getCustomerInfo() {
+        return {
+            name: document.getElementById('customer-name')?.value.trim() || '',
+            phone: document.getElementById('customer-phone')?.value.trim() || '',
+            address: document.getElementById('customer-address')?.value.trim() || '',
+            remark: document.getElementById('customer-remark')?.value.trim() || ''
+        };
     }
 
     function normalizeFoodItem(item, index) {
@@ -273,11 +333,23 @@
         const detail = document.getElementById('cart-detail');
         const isCartOpen = detail.classList.contains('active');
 
-        document.getElementById('cart-summary').innerText = `${totals.count} 件商品 · ${formatRM(totals.price)}`;
-        document.getElementById('cart-count-badge').innerText = totals.count;
-        document.getElementById('cart-subtotal').innerText = formatRM(totals.price);
+        document.getElementById('cart-summary').innerText = `${totals.totalCount} 件商品 · ${formatRM(totals.totalPrice)}`;
+        document.getElementById('cart-count-badge').innerText = totals.totalCount;
+        document.getElementById('cart-subtotal').innerText = formatRM(totals.totalPrice);
 
-        if (totals.count === 0) {
+        const freeDeliveryInfo = getFreeDeliveryInfo(totals.totalPrice);
+        const freeDeliveryText = document.getElementById('free-delivery-text');
+        const freeDeliveryProgress = document.getElementById('free-delivery-progress');
+        if (freeDeliveryText && freeDeliveryProgress) {
+            freeDeliveryText.innerText = getFreeDeliveryText(totals.totalPrice);
+            freeDeliveryText.classList.toggle('text-emerald-600', freeDeliveryInfo.reached);
+            freeDeliveryText.classList.toggle('text-orange-600', !freeDeliveryInfo.reached);
+            freeDeliveryProgress.style.width = `${freeDeliveryInfo.progress}%`;
+            freeDeliveryProgress.classList.toggle('bg-emerald-500', freeDeliveryInfo.reached);
+            freeDeliveryProgress.classList.toggle('bg-orange-500', !freeDeliveryInfo.reached);
+        }
+
+        if (totals.totalCount === 0) {
             closeCartDetail();
             bar.classList.add('hidden');
         } else {
@@ -363,18 +435,42 @@
         const name = foodItem.name;
         if (!name) return;
 
+        const previousCount = cart[name]?.count || 0;
+
         if (!cart[name]) {
             cart[name] = {
                 name,
                 price: Number(foodItem.price) || Number(price) || 0,
                 count: 0,
                 image_url: foodItem.image_url || '',
-                description: foodItem.description || ''
+                description: foodItem.description || '',
+                category: foodItem.category || '小吃'
             };
         }
 
         cart[name].count += Number(delta);
-        if (cart[name].count <= 0) {
+        const newQuantity = cart[name].count;
+
+        if (delta > 0 && previousCount === 0 && newQuantity === 1) {
+            trackEvent('add_to_cart', {
+                item_name: cart[name].name,
+                item_category: cart[name].category || '小吃',
+                price: Number(cart[name].price)
+            });
+        } else if (delta > 0) {
+            trackEvent('increase_quantity', {
+                item_name: cart[name].name,
+                quantity: newQuantity
+            });
+        } else if (delta < 0) {
+            trackEvent('decrease_quantity', {
+                item_name: cart[name].name,
+                quantity: Math.max(newQuantity, 0)
+            });
+        }
+
+        if (newQuantity <= 0) {
+            trackEvent('remove_from_cart', { item_name: cart[name].name });
             delete cart[name];
         }
 
@@ -382,8 +478,11 @@
     }
 
     // 核心筛选与渲染逻辑
-    function filterMenu(category) {
+    function filterMenu(category, shouldTrack = true) {
         currentCategory = category;
+        if (shouldTrack) {
+            trackEvent('category_filter', { category });
+        }
 
         document.querySelectorAll('.category-tab').forEach(btn => {
             const active = btn.dataset.category === category;
@@ -437,9 +536,11 @@
 
             if (error) throw error;
             allFoodData = (data || []).map(normalizeFoodItem);
-            filterMenu(currentCategory);
+            trackEvent('menu_loaded', { item_count: allFoodData.length });
+            filterMenu(currentCategory, false);
         } catch (err) {
             console.error("加载失败:", err);
+            trackEvent('menu_load_failed', { error_message: String(err.message || err) });
             document.getElementById('food-container').innerHTML = '<p class="col-span-2 rounded-[28px] bg-white px-4 py-12 text-center text-sm font-bold text-neutral-400 shadow-sm ring-1 ring-neutral-100">菜单加载失败，请稍后再试。</p>';
             document.getElementById('menu-count').innerText = '加载失败';
         }
@@ -447,7 +548,12 @@
 
     function openCartDetail() {
         const totals = getCartTotals();
-        if (totals.count === 0) return;
+        if (totals.totalCount === 0) return;
+
+        trackEvent('open_cart', {
+            cart_count: totals.totalCount,
+            cart_value: Number(totals.totalPrice.toFixed(2))
+        });
 
         document.getElementById('cart-detail').classList.add('active');
         document.getElementById('cart-overlay').classList.remove('hidden');
@@ -461,7 +567,7 @@
         document.body.classList.remove('overflow-hidden', 'cart-sheet-open');
 
         const totals = getCartTotals();
-        if (totals.count > 0) {
+        if (totals.totalCount > 0) {
             document.getElementById('cart-bar').classList.remove('hidden');
         }
     }
@@ -478,6 +584,11 @@
     }
 
     function clearCart() {
+        const previousTotals = getCartTotals();
+        trackEvent('clear_cart', {
+            cart_count: previousTotals.totalCount,
+            cart_value: Number(previousTotals.totalPrice.toFixed(2))
+        });
         cart = {};
         updateUI();
         toggleCartDetail(false);
@@ -485,19 +596,36 @@
 
     function sendOrder() {
         const items = Object.values(cart);
+        const totals = getCartTotals();
         if (items.length === 0) {
+            trackEvent('checkout_empty_cart');
             alert("请先选择商品");
             return;
         }
 
-        let total = 0;
+        const customerInfo = getCustomerInfo();
         const lines = items.map(item => {
             const subtotal = Number(item.price) * item.count;
-            total += subtotal;
             return `• ${item.name} x ${item.count} = ${formatRM(subtotal)}`;
         });
+        const customerLines = [
+            '👤 下单信息：',
+            `姓名：${customerInfo.name || '无'}`,
+            `联系电话：${customerInfo.phone || '无'}`,
+            `地址 / 区域：${customerInfo.address || '无'}`
+        ];
 
-        const text = `你好，我要下单：\n\n🧾 订单明细：\n${lines.join('\n')}\n\n--------------------\n商品小计：${formatRM(total)}\n\n备注：无\n谢谢！`;
+        trackEvent('checkout_whatsapp', {
+            cart_count: totals.totalCount,
+            cart_value: Number(totals.totalPrice.toFixed(2)),
+            has_name: Boolean(customerInfo.name),
+            has_phone: Boolean(customerInfo.phone),
+            has_address: Boolean(customerInfo.address),
+            has_remark: Boolean(customerInfo.remark),
+            free_delivery_reached: totals.totalPrice >= FREE_DELIVERY_THRESHOLD
+        });
+
+        const text = `你好，我要下单：\n\n${customerLines.join('\n')}\n\n🧾 订单明细：\n${lines.join('\n')}\n\n---\n\n商品小计：${formatRM(totals.totalPrice)}\n免配送进度：${getFreeDeliveryText(totals.totalPrice)}\n\n备注：${customerInfo.remark || '无'}\n谢谢！`;
         window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(text)}`);
     }
 
