@@ -115,15 +115,15 @@
     </style>
 </head>
 
-<body class="bg-neutral-50 text-neutral-950 antialiased">
+<body class="bg-[#FAF8F3] text-[#111111] antialiased">
 
-<header class="sticky top-0 z-50 border-b border-neutral-200/70 bg-white/85 backdrop-blur-xl">
+<header class="sticky top-0 z-50 border-b border-neutral-200/70 bg-white/80 backdrop-blur-xl">
     <div class="app-shell flex items-center justify-between px-4 py-3.5">
         <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">Food Ordering</p>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#174F2A]/70">FOOD ORDERING</p>
             <h1 class="text-[28px] font-black leading-none tracking-tight text-black">闽南小吃</h1>
         </div>
-        <div class="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-100">
+        <div class="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-extrabold text-[#16A067] ring-1 ring-[#16A067]/15">
             <span class="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.14)]"></span>
             营业中
         </div>
@@ -132,30 +132,30 @@
 
 <main class="app-shell px-4 pb-40 pt-5">
 
-    <section class="mb-5 overflow-hidden rounded-[28px] border border-orange-100 bg-gradient-to-br from-white via-orange-50/75 to-white p-4 shadow-sm">
+    <section class="mb-5 overflow-hidden rounded-[28px] border border-[#F3E2C5] bg-[#FFF8EA] p-4 shadow-sm">
         <div class="mb-2.5 flex items-center gap-2">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-base">📝</div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-[#FF7A1A]/10 text-base text-[#FF7A1A]">♡</div>
             <h2 class="text-base font-black text-neutral-950">温馨提示</h2>
         </div>
         <ul class="space-y-1.5 text-[13px] font-medium leading-relaxed text-neutral-600">
-            <li>• 点击“查看购物车”便可前往WhatsAp结算【+60 11 1686 7588】</li>
-            <li>• 以下均为商品大概价格，最终价格会再称重！！！（在WhatsApp 结算）</li>
+            <li>• 点击“查看购物车”便可前往 WhatsApp 结算【+60 11 1686 7588】</li>
+            <li>• 以下均为商品大概价格，最终价格会再称重！！！（在 WhatsApp 结算）</li>
             <li>• 粿类需提前一天预订，粽子类最少买5个</li>
             <li>• 满 300 免配送费</li>
-            <li>• 支付方式：仅支持Touch'n Go 或者 支付宝 / 微信（按当天汇率计算）</li>
+            <li>• 支付方式：仅支持 Touch'n Go 或者 支付宝 / 微信（按当天汇率计算）</li>
         </ul>
     </section>
 
     <section class="mb-4 flex items-end justify-between">
         <div>
-            <p class="text-sm font-bold text-orange-600">今日菜单</p>
+            <p class="text-sm font-bold text-[#FF4B1F]">今日菜单</p>
             <h2 class="text-2xl font-black tracking-tight text-neutral-950">选择你想吃的</h2>
         </div>
         <p id="menu-count" class="rounded-full bg-white px-3 py-1 text-xs font-bold text-neutral-500 shadow-sm ring-1 ring-neutral-100">加载中</p>
     </section>
 
     <nav class="mb-5 flex gap-2 rounded-full bg-white p-1.5 shadow-sm ring-1 ring-neutral-100" aria-label="商品分类">
-        <button type="button" data-category="小吃" id="tab-小吃" class="category-tab min-h-11 flex-1 rounded-full bg-black px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-black/10 active:scale-95">小吃</button>
+        <button type="button" data-category="小吃" id="tab-小吃" class="category-tab min-h-11 flex-1 rounded-full bg-[#174F2A] px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-[#174F2A]/15 active:scale-95">小吃</button>
         <button type="button" data-category="干货" id="tab-干货" class="category-tab min-h-11 flex-1 rounded-full bg-neutral-100 px-5 py-2.5 text-sm font-black text-neutral-600 active:scale-95">干货</button>
     </nav>
 
@@ -166,24 +166,24 @@
 </main>
 
 <div id="cart-bar" role="button" tabindex="0" aria-label="打开购物车"
-     class="fixed left-1/2 z-[90] hidden w-[calc(100%-24px)] max-w-[430px] -translate-x-1/2 rounded-[2rem] bg-black p-3 text-white shadow-2xl shadow-black/30">
+     class="fixed left-1/2 z-[90] hidden w-[calc(100%-24px)] max-w-[460px] -translate-x-1/2 rounded-[2rem] bg-[#174F2A] p-3 text-white shadow-2xl shadow-black/30">
     <div class="flex items-center gap-3">
-        <div class="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-neutral-900 text-2xl">🛒
-            <span id="cart-count-badge" class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-orange-500 text-xs font-black text-white">0</span>
+        <div class="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0F3D22] text-2xl">🛒
+            <span id="cart-count-badge" class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#FF7A1A] text-xs font-black text-white">0</span>
         </div>
 
         <div class="min-w-0 flex-1 text-left">
             <p class="mb-1 text-xs font-semibold leading-none text-neutral-400">已选商品</p>
-            <p id="cart-summary" class="truncate text-lg font-black leading-tight tracking-tight">0 件商品 · RM 0.00</p>
+            <p id="cart-summary" class="truncate text-lg font-black leading-tight tracking-tight">已选 0 件商品 | RM 0.00</p>
             <div class="mt-1.5">
-                <p id="cart-free-delivery-text" class="mb-1 truncate text-[11px] font-bold text-orange-400">还差 RM 300.00 免配送费</p>
-                <div class="h-1 overflow-hidden rounded-full bg-neutral-800">
-                    <div id="cart-free-delivery-bar" class="h-full rounded-full bg-orange-500 transition-all duration-300 ease-out" style="width: 0%"></div>
+                <p id="cart-free-delivery-text" class="mb-1 truncate text-[11px] font-bold text-[#FF7A1A]">还差 RM 300.00 免配送费</p>
+                <div class="h-1 overflow-hidden rounded-full bg-white/20">
+                    <div id="cart-free-delivery-bar" class="h-full rounded-full bg-[#FF7A1A] transition-all duration-300 ease-out" style="width: 0%"></div>
                 </div>
             </div>
         </div>
 
-        <button id="open-cart-btn" type="button" class="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-black transition-transform active:scale-95">
+        <button id="open-cart-btn" type="button" class="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-[#0F3D22] transition-transform active:scale-95">
             查看购物车
         </button>
     </div>
@@ -192,7 +192,7 @@
 <div id="cart-overlay" class="fixed inset-0 z-[100] hidden bg-black/45 backdrop-blur-[2px]"></div>
 
 <aside id="cart-detail" aria-modal="true" role="dialog" aria-labelledby="cart-title"
-     class="fixed bottom-0 left-1/2 z-[120] flex max-h-[78vh] w-full max-w-[460px] flex-col overflow-hidden rounded-t-[34px] bg-white shadow-2xl">
+     class="fixed bottom-0 left-1/2 z-[120] flex max-h-[80vh] w-full max-w-[460px] flex-col overflow-hidden rounded-t-[34px] bg-white shadow-2xl">
     <div class="mx-auto mt-3 h-1.5 w-12 shrink-0 rounded-full bg-neutral-200"></div>
     <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 pb-4 pt-4">
         <div>
@@ -227,13 +227,13 @@
     <div class="shrink-0 border-t border-neutral-100 bg-white px-5 pb-5 pt-4">
         <div class="mb-1 flex items-center justify-between">
             <span class="text-sm font-bold text-neutral-500">商品小计</span>
-            <span id="cart-subtotal" class="text-xl font-black text-orange-600">RM 0.00</span>
+            <span id="cart-subtotal" class="text-xl font-black text-[#FF4B1F]">RM 0.00</span>
         </div>
-        <p id="free-delivery-text" class="mb-3 text-xs font-black text-orange-600">还差 RM 300.00 免配送费</p>
+        <p id="free-delivery-text" class="mb-3 text-xs font-black text-[#FF4B1F]">还差 RM 300.00 免配送费</p>
         <p class="mb-3 text-xs font-medium leading-relaxed text-neutral-400">按去结算会自动跳转至 WhatsApp 向卖家下单，免配送费进度仅作提醒</p>
-        <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-orange-600 px-5 py-4 text-base font-black text-white shadow-xl shadow-orange-600/25 active:scale-[0.99]">
+        <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-4 text-base font-black text-white shadow-xl shadow-[#25D366]/25 hover:bg-[#1DA851] active:bg-[#1DA851] active:scale-[0.99]">
+            <span class="text-xl">☏</span>
             <span>去 WhatsApp 结算</span>
-            <span class="text-lg">➜</span>
         </button>
     </div>
 </aside>
@@ -298,6 +298,11 @@
         return info.reached ? '已享受免配送费' : `还差 ${formatRM(info.remaining)} 免配送费`;
     }
 
+    function getFreeDeliveryFloatingText(totalPrice) {
+        const info = getFreeDeliveryInfo(totalPrice);
+        return info.reached ? '已享受免配送费' : '满 RM300 免配送费';
+    }
+
     function getCustomerInfo() {
         return {
             name: document.getElementById('customer-name')?.value.trim() || '',
@@ -330,7 +335,7 @@
         const detail = document.getElementById('cart-detail');
         const isCartOpen = detail.classList.contains('active');
 
-        document.getElementById('cart-summary').innerText = `${totals.totalCount} 件商品 · ${formatRM(totals.totalPrice)}`;
+        document.getElementById('cart-summary').innerText = `已选 ${totals.totalCount} 件商品 | ${formatRM(totals.totalPrice)}`;
         document.getElementById('cart-count-badge').innerText = totals.totalCount;
         document.getElementById('cart-subtotal').innerText = formatRM(totals.totalPrice);
 
@@ -339,17 +344,17 @@
         const cartFreeDeliveryText = document.getElementById('cart-free-delivery-text');
         const cartFreeDeliveryBar = document.getElementById('cart-free-delivery-bar');
         if (freeDeliveryText) {
-            freeDeliveryText.innerText = getFreeDeliveryText(totals.totalPrice);
+            freeDeliveryText.innerText = freeDeliveryInfo.reached ? '已享受免配送费' : `再购 ${formatRM(freeDeliveryInfo.remaining)} 即可享受免配送费`;
             freeDeliveryText.classList.toggle('text-emerald-600', freeDeliveryInfo.reached);
-            freeDeliveryText.classList.toggle('text-orange-600', !freeDeliveryInfo.reached);
+            freeDeliveryText.classList.toggle('text-[#FF4B1F]', !freeDeliveryInfo.reached);
         }
         if (cartFreeDeliveryText && cartFreeDeliveryBar) {
-            cartFreeDeliveryText.innerText = getFreeDeliveryText(totals.totalPrice);
+            cartFreeDeliveryText.innerText = getFreeDeliveryFloatingText(totals.totalPrice);
             cartFreeDeliveryText.classList.toggle('text-emerald-400', freeDeliveryInfo.reached);
-            cartFreeDeliveryText.classList.toggle('text-orange-400', !freeDeliveryInfo.reached);
+            cartFreeDeliveryText.classList.toggle('text-[#FF7A1A]', !freeDeliveryInfo.reached);
             cartFreeDeliveryBar.style.width = `${freeDeliveryInfo.progress}%`;
             cartFreeDeliveryBar.classList.toggle('bg-emerald-500', freeDeliveryInfo.reached);
-            cartFreeDeliveryBar.classList.toggle('bg-orange-500', !freeDeliveryInfo.reached);
+            cartFreeDeliveryBar.classList.toggle('bg-[#FF7A1A]', !freeDeliveryInfo.reached);
         }
 
         if (totals.totalCount === 0) {
@@ -379,11 +384,11 @@
                                 <h4 class="truncate text-sm font-black text-neutral-950">${escapeHTML(item.name)}</h4>
                                 <p class="mt-0.5 text-xs font-bold text-neutral-400">单价 ${formatRM(item.price)}</p>
                             </div>
-                            <p class="shrink-0 text-sm font-black text-orange-600">${formatRM(item.price * item.count)}</p>
+                            <p class="shrink-0 text-sm font-black text-[#FF4B1F]">${formatRM(item.price * item.count)}</p>
                         </div>
                         <p class="line-clamp-2 mt-1 min-w-0 text-xs leading-snug text-neutral-400">${escapeHTML(item.description)}</p>
                         <div class="mt-2 flex items-center justify-end">
-                            <div class="flex h-9 min-w-[96px] shrink-0 items-center justify-between rounded-full bg-black px-2 text-white shadow-lg shadow-black/10">
+                            <div class="flex h-9 min-w-[96px] shrink-0 items-center justify-between rounded-full bg-[#174F2A] px-2 text-white shadow-lg shadow-black/10">
                                 <button type="button" data-cart-name="${escapeHTML(item.name)}" data-delta="-1" class="cart-qty-btn flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">−</button>
                                 <span class="min-w-5 text-center text-sm font-black">${item.count}</span>
                                 <button type="button" data-cart-name="${escapeHTML(item.name)}" data-delta="1" class="cart-qty-btn flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">+</button>
@@ -404,7 +409,7 @@
             const cartItem = cart[item.name];
             if (cartItem) {
                 control.innerHTML = `
-                    <div class="flex h-9 min-w-[96px] items-center justify-between rounded-full bg-black px-2 text-white shadow-lg shadow-black/10">
+                    <div class="flex h-9 min-w-[96px] items-center justify-between rounded-full bg-[#174F2A] px-2 text-white shadow-lg shadow-black/10">
                         <button type="button" data-action="food-qty" data-delta="-1" class="flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">−</button>
                         <span class="min-w-5 text-center text-sm font-black">${cartItem.count}</span>
                         <button type="button" data-action="food-qty" data-delta="1" class="flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">+</button>
@@ -412,7 +417,7 @@
                 `;
             } else {
                 control.innerHTML = `
-                    <button type="button" data-action="add-food" class="flex h-9 w-9 items-center justify-center rounded-full bg-black text-xl font-black text-white shadow-lg shadow-black/10 transition-transform active:scale-95">
+                    <button type="button" data-action="add-food" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#174F2A] text-xl font-black text-white shadow-lg shadow-black/10 transition-transform active:scale-95">
                         +
                     </button>
                 `;
@@ -489,10 +494,10 @@
 
         document.querySelectorAll('.category-tab').forEach(btn => {
             const active = btn.dataset.category === category;
-            btn.classList.toggle('bg-black', active);
+            btn.classList.toggle('bg-[#174F2A]', active);
             btn.classList.toggle('text-white', active);
             btn.classList.toggle('shadow-lg', active);
-            btn.classList.toggle('shadow-black/10', active);
+            btn.classList.toggle('shadow-[#174F2A]/15', active);
             btn.classList.toggle('bg-neutral-100', !active);
             btn.classList.toggle('text-neutral-600', !active);
         });
@@ -519,7 +524,7 @@
                     <h3 class="line-clamp-2 min-h-[2.45rem] text-[15px] font-black leading-tight text-neutral-950">${escapeHTML(item.name)}</h3>
                     <p class="line-clamp-2 mt-1 min-h-[2.25rem] text-[13px] font-medium leading-[1.35] text-neutral-500">${escapeHTML(item.description)}</p>
                     <div class="mt-3 flex items-center justify-between gap-2">
-                        <p class="shrink-0 text-[17px] font-black leading-none text-orange-600">${formatRM(item.price)}</p>
+                        <p class="shrink-0 text-[17px] font-black leading-none text-[#FF4B1F]">${formatRM(item.price)}</p>
                         <div data-food-control="${index}" class="flex min-w-[40px] justify-end"></div>
                     </div>
                 </div>
