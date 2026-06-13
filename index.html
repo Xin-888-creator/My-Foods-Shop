@@ -34,6 +34,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
             overflow-x: hidden;
+            background: #FAF8F3;
         }
 
         .app-shell {
@@ -59,6 +60,12 @@
         .category-tab,
         button {
             transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+        }
+
+        .line-clamp-1 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .line-clamp-2 {
@@ -117,11 +124,11 @@
 
 <body class="bg-[#FAF8F3] text-[#111111] antialiased">
 
-<header class="sticky top-0 z-50 border-b border-neutral-200/70 bg-white/80 backdrop-blur-xl">
-    <div class="app-shell flex items-center justify-between px-4 py-3.5">
+<header class="sticky top-0 z-50 border-b border-[#EDEDED]/70 bg-[#FAF8F3]/88 backdrop-blur-xl">
+    <div class="app-shell flex items-center justify-between px-4 py-3">
         <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#174F2A]/70">FOOD ORDERING</p>
-            <h1 class="text-[28px] font-black leading-none tracking-tight text-black">闽南小吃</h1>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#174F2A]/65">FOOD ORDERING</p>
+            <h1 class="text-[27px] font-black leading-none tracking-tight text-black">闽南小吃</h1>
         </div>
         <div class="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-extrabold text-[#16A067] ring-1 ring-[#16A067]/15">
             <span class="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.14)]"></span>
@@ -132,12 +139,12 @@
 
 <main class="app-shell px-4 pb-40 pt-5">
 
-    <section class="mb-5 overflow-hidden rounded-[28px] border border-[#F3E2C5] bg-[#FFF8EA] p-4 shadow-sm">
+    <section class="mb-5 overflow-hidden rounded-[1.5rem] border border-[#F1DFC0] bg-[#FFF8EA] p-4 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
         <div class="mb-2.5 flex items-center gap-2">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-[#FF7A1A]/10 text-base text-[#FF7A1A]">♡</div>
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-2xl bg-[#FF7A1A]/12 text-sm text-[#FF7A1A]">✦</div>
             <h2 class="text-base font-black text-neutral-950">温馨提示</h2>
         </div>
-        <ul class="space-y-1.5 text-[13px] font-medium leading-relaxed text-neutral-600">
+        <ul class="space-y-1.5 text-[13px] font-medium leading-relaxed text-[#6B6B6B]">
             <li>• 点击“查看购物车”便可前往 WhatsApp 结算【+60 11 1686 7588】</li>
             <li>• 以下均为商品大概价格，最终价格会再称重！！！（在 WhatsApp 结算）</li>
             <li>• 粿类需提前一天预订，粽子类最少买5个</li>
@@ -149,32 +156,32 @@
     <section class="mb-4 flex items-end justify-between">
         <div>
             <p class="text-sm font-bold text-[#FF4B1F]">今日菜单</p>
-            <h2 class="text-2xl font-black tracking-tight text-neutral-950">选择你想吃的</h2>
+            <h2 class="text-[24px] font-black tracking-tight text-neutral-950">选择你想吃的</h2>
         </div>
-        <p id="menu-count" class="rounded-full bg-white px-3 py-1 text-xs font-bold text-neutral-500 shadow-sm ring-1 ring-neutral-100">加载中</p>
+        <p id="menu-count" class="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#6B6B6B] shadow-sm ring-1 ring-[#EDEDED]">加载中</p>
     </section>
 
-    <nav class="mb-5 flex gap-2 rounded-full bg-white p-1.5 shadow-sm ring-1 ring-neutral-100" aria-label="商品分类">
-        <button type="button" data-category="小吃" id="tab-小吃" class="category-tab min-h-11 flex-1 rounded-full bg-[#174F2A] px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-[#174F2A]/15 active:scale-95">小吃</button>
-        <button type="button" data-category="干货" id="tab-干货" class="category-tab min-h-11 flex-1 rounded-full bg-neutral-100 px-5 py-2.5 text-sm font-black text-neutral-600 active:scale-95">干货</button>
+    <nav class="mb-5 flex gap-1.5 rounded-full bg-white p-1 shadow-[0_10px_26px_rgba(0,0,0,0.04)] ring-1 ring-[#EDEDED]" aria-label="商品分类">
+        <button type="button" data-category="小吃" id="tab-小吃" class="category-tab h-11 flex-1 rounded-full bg-[#174F2A] px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-[#174F2A]/15 active:scale-95">小吃</button>
+        <button type="button" data-category="干货" id="tab-干货" class="category-tab h-11 flex-1 rounded-full bg-[#F2F2F2] px-5 py-2.5 text-sm font-black text-[#6B6B6B] active:scale-95">干货</button>
     </nav>
 
-    <section id="food-container" class="grid grid-cols-2 gap-3.5 sm:gap-4" aria-live="polite">
+    <section id="food-container" class="grid grid-cols-2 gap-3.5" aria-live="polite">
         <div class="col-span-2 rounded-[28px] bg-white p-8 text-center text-sm font-bold text-neutral-400 shadow-sm ring-1 ring-neutral-100">正在准备新鲜食材...</div>
     </section>
 
 </main>
 
 <div id="cart-bar" role="button" tabindex="0" aria-label="打开购物车"
-     class="fixed left-1/2 z-[90] hidden w-[calc(100%-24px)] max-w-[460px] -translate-x-1/2 rounded-[2rem] bg-[#174F2A] p-3 text-white shadow-2xl shadow-black/30">
+     class="fixed left-1/2 z-[90] hidden w-[calc(100%-24px)] max-w-[460px] -translate-x-1/2 min-h-[78px] rounded-[1.85rem] bg-[#174F2A] p-2.5 text-white shadow-[0_18px_42px_rgba(15,61,34,0.35)]">
     <div class="flex items-center gap-3">
-        <div class="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0F3D22] text-2xl">🛒
+        <div class="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0F3D22] text-white"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h14l-1.4 7.2a2 2 0 0 1-2 1.6H9.2a2 2 0 0 1-2-1.7L6 4H3"/><circle cx="9.5" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
             <span id="cart-count-badge" class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#FF7A1A] text-xs font-black text-white">0</span>
         </div>
 
         <div class="min-w-0 flex-1 text-left">
-            <p class="mb-1 text-xs font-semibold leading-none text-neutral-400">已选商品</p>
-            <p id="cart-summary" class="truncate text-lg font-black leading-tight tracking-tight">已选 0 件商品 | RM 0.00</p>
+            <p class="mb-0.5 text-[11px] font-semibold leading-none text-white/62">已选商品</p>
+            <p id="cart-summary" class="truncate text-[15px] font-black leading-tight tracking-tight">已选 0 件商品 | RM 0.00</p>
             <div class="mt-1.5">
                 <p id="cart-free-delivery-text" class="mb-1 truncate text-[11px] font-bold text-[#FF7A1A]">还差 RM 300.00 免配送费</p>
                 <div class="h-1 overflow-hidden rounded-full bg-white/20">
@@ -183,7 +190,7 @@
             </div>
         </div>
 
-        <button id="open-cart-btn" type="button" class="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-[#0F3D22] transition-transform active:scale-95">
+        <button id="open-cart-btn" type="button" class="shrink-0 rounded-full bg-white px-3.5 py-2.5 text-xs font-black text-[#0F3D22] transition-transform active:scale-95">
             查看购物车
         </button>
     </div>
@@ -192,33 +199,33 @@
 <div id="cart-overlay" class="fixed inset-0 z-[100] hidden bg-black/45 backdrop-blur-[2px]"></div>
 
 <aside id="cart-detail" aria-modal="true" role="dialog" aria-labelledby="cart-title"
-     class="fixed bottom-0 left-1/2 z-[120] flex max-h-[80vh] w-full max-w-[460px] flex-col overflow-hidden rounded-t-[34px] bg-white shadow-2xl">
+     class="fixed bottom-0 left-1/2 z-[120] flex max-h-[82vh] w-full max-w-[460px] flex-col overflow-hidden rounded-t-[2rem] bg-white shadow-2xl">
     <div class="mx-auto mt-3 h-1.5 w-12 shrink-0 rounded-full bg-neutral-200"></div>
-    <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 pb-4 pt-4">
+    <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 pb-3.5 pt-4">
         <div>
-            <h3 id="cart-title" class="text-2xl font-black tracking-tight">购物车</h3>
+            <h3 id="cart-title" class="text-[24px] font-black tracking-tight">购物车</h3>
             <p class="text-xs font-semibold text-neutral-400">确认商品后即可去 WhatsApp 下单</p>
         </div>
-        <button id="clear-cart-btn" type="button" class="rounded-full bg-neutral-100 px-4 py-2 text-sm font-black text-neutral-500 active:scale-95">清空</button>
+        <button id="clear-cart-btn" type="button" class="rounded-full bg-[#F2F2F2] px-3.5 py-2 text-xs font-black text-neutral-500 active:scale-95">清空</button>
     </div>
 
-    <div class="cart-scroll flex-1 overflow-y-auto px-5 py-4">
+    <div class="cart-scroll flex-1 overflow-y-auto px-5 py-3.5">
         <div id="cart-list" class="space-y-3"></div>
 
-        <section class="mt-4 rounded-2xl border border-neutral-100 bg-neutral-50 p-4" aria-labelledby="customer-info-title">
+        <section class="mt-4 rounded-2xl border border-[#EDEDED] bg-white p-4" aria-labelledby="customer-info-title">
             <h4 id="customer-info-title" class="mb-3 text-[15px] font-black text-neutral-950">下单信息（选填）</h4>
-            <div class="space-y-3">
-                <label class="block">
-                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">姓名</span>
-                    <input id="customer-name" type="text" autocomplete="name" placeholder="" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none focus:border-neutral-400">
+            <div class="space-y-2.5">
+                <label class="relative block">
+                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#9A9A9A]">👤</span>
+                    <input id="customer-name" type="text" autocomplete="name" placeholder="姓名" class="h-[42px] w-full rounded-xl border border-[#E5E5E5] bg-white pl-9 pr-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A]/50 focus:ring-2 focus:ring-[#174F2A]/10">
                 </label>
-                <label class="block">
-                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">联系电话</span>
-                    <input id="customer-phone" type="tel" autocomplete="tel" placeholder="" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none focus:border-neutral-400">
+                <label class="relative block">
+                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#9A9A9A]">✆</span>
+                    <input id="customer-phone" type="tel" autocomplete="tel" placeholder="联系电话" class="h-[42px] w-full rounded-xl border border-[#E5E5E5] bg-white pl-9 pr-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A]/50 focus:ring-2 focus:ring-[#174F2A]/10">
                 </label>
-                <label class="block">
-                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">地址 / 区域</span>
-                    <input id="customer-address" type="text" autocomplete="street-address" placeholder="" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none focus:border-neutral-400">
+                <label class="relative block">
+                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#9A9A9A]">⌖</span>
+                    <input id="customer-address" type="text" autocomplete="street-address" placeholder="地址 / 区域" class="h-[42px] w-full rounded-xl border border-[#E5E5E5] bg-white pl-9 pr-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A]/50 focus:ring-2 focus:ring-[#174F2A]/10">
                 </label>
             </div>
         </section>
@@ -231,8 +238,11 @@
         </div>
         <p id="free-delivery-text" class="mb-3 text-xs font-black text-[#FF4B1F]">还差 RM 300.00 免配送费</p>
         <p class="mb-3 text-xs font-medium leading-relaxed text-neutral-400">按去结算会自动跳转至 WhatsApp 向卖家下单，免配送费进度仅作提醒</p>
-        <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-4 text-base font-black text-white shadow-xl shadow-[#25D366]/25 hover:bg-[#1DA851] active:bg-[#1DA851] active:scale-[0.99]">
-            <span class="text-xl">☏</span>
+        <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#1FAF5A] px-5 py-4 text-base font-black text-white shadow-xl shadow-[#1FAF5A]/22 hover:bg-[#168A45] active:bg-[#168A45] active:scale-[0.99]">
+            <svg viewBox="0 0 32 32" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                <path d="M19.11 17.2c-.28-.14-1.65-.81-1.9-.9-.26-.1-.45-.14-.64.14-.19.28-.73.9-.9 1.09-.16.19-.33.21-.61.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.49.14-.16.19-.28.28-.47.09-.19.05-.35-.02-.49-.07-.14-.64-1.54-.88-2.11-.23-.56-.47-.48-.64-.49h-.55c-.19 0-.49.07-.75.35-.26.28-.99.97-.99 2.37s1.02 2.75 1.16 2.94c.14.19 2.01 3.07 4.87 4.3.68.29 1.21.47 1.62.6.68.22 1.3.19 1.79.12.55-.08 1.65-.67 1.89-1.32.23-.65.23-1.2.16-1.32-.07-.12-.26-.19-.54-.33z"></path>
+                <path d="M16.04 3C8.86 3 3.02 8.83 3.02 16c0 2.29.6 4.53 1.74 6.5L3 29l6.66-1.74A12.93 12.93 0 0 0 16.04 29C23.22 29 29 23.17 29 16S23.22 3 16.04 3zm0 23.8c-2.02 0-4-.54-5.73-1.57l-.41-.24-3.95 1.03 1.05-3.85-.27-.43A10.74 10.74 0 0 1 5.23 16c0-5.96 4.85-10.8 10.81-10.8 5.95 0 10.76 4.84 10.76 10.8S21.99 26.8 16.04 26.8z"></path>
+            </svg>
             <span>去 WhatsApp 结算</span>
         </button>
     </div>
@@ -374,8 +384,8 @@
 
         list.innerHTML = items.length
             ? items.map(item => `
-                <article class="flex gap-3 rounded-[24px] bg-neutral-50 p-3 ring-1 ring-neutral-100">
-                    <div class="h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl bg-neutral-100">
+                <article class="flex gap-3 border-b border-[#EDEDED] bg-white py-3 last:border-b-0">
+                    <div class="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#F2F2F2]">
                         <img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.name)}" class="h-full w-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/160/f3f4f6/9ca3af?text=%E7%BE%8E%E5%91%B3';">
                     </div>
                     <div class="min-w-0 flex-1">
@@ -388,7 +398,7 @@
                         </div>
                         <p class="line-clamp-2 mt-1 min-w-0 text-xs leading-snug text-neutral-400">${escapeHTML(item.description)}</p>
                         <div class="mt-2 flex items-center justify-end">
-                            <div class="flex h-9 min-w-[96px] shrink-0 items-center justify-between rounded-full bg-[#174F2A] px-2 text-white shadow-lg shadow-black/10">
+                            <div class="flex h-[34px] min-w-[94px] shrink-0 items-center justify-between rounded-full bg-[#174F2A] px-2 text-white shadow-lg shadow-black/10">
                                 <button type="button" data-cart-name="${escapeHTML(item.name)}" data-delta="-1" class="cart-qty-btn flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">−</button>
                                 <span class="min-w-5 text-center text-sm font-black">${item.count}</span>
                                 <button type="button" data-cart-name="${escapeHTML(item.name)}" data-delta="1" class="cart-qty-btn flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">+</button>
@@ -409,7 +419,7 @@
             const cartItem = cart[item.name];
             if (cartItem) {
                 control.innerHTML = `
-                    <div class="flex h-9 min-w-[96px] items-center justify-between rounded-full bg-[#174F2A] px-2 text-white shadow-lg shadow-black/10">
+                    <div class="flex h-[34px] min-w-[94px] items-center justify-between rounded-full bg-[#174F2A] px-2 text-white shadow-lg shadow-black/10">
                         <button type="button" data-action="food-qty" data-delta="-1" class="flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">−</button>
                         <span class="min-w-5 text-center text-sm font-black">${cartItem.count}</span>
                         <button type="button" data-action="food-qty" data-delta="1" class="flex h-7 w-7 items-center justify-center rounded-full text-lg font-black active:scale-90">+</button>
@@ -498,8 +508,8 @@
             btn.classList.toggle('text-white', active);
             btn.classList.toggle('shadow-lg', active);
             btn.classList.toggle('shadow-[#174F2A]/15', active);
-            btn.classList.toggle('bg-neutral-100', !active);
-            btn.classList.toggle('text-neutral-600', !active);
+            btn.classList.toggle('bg-[#F2F2F2]', !active);
+            btn.classList.toggle('text-[#6B6B6B]', !active);
         });
 
         // 筛选数据（兼容处理：如果某项没有设置 category，默认归类为小吃）
@@ -516,15 +526,15 @@
         }
 
         container.innerHTML = filteredData.map(({ item, index }) => `
-            <article data-food-index="${index}" class="food-card overflow-hidden rounded-[26px] border border-neutral-100 bg-white p-2 shadow-sm">
-                <div class="aspect-square overflow-hidden rounded-[21px] bg-neutral-100">
+            <article data-food-index="${index}" class="food-card overflow-hidden rounded-[1.4rem] border border-[#EDEDED] bg-white p-2 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
+                <div class="aspect-[1.08/1] overflow-hidden rounded-[18px] bg-[#F2F2F2]">
                     <img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.name)}" class="h-full w-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/400/f3f4f6/9ca3af?text=%E7%BE%8E%E5%91%B3%E7%AD%B9%E5%A4%87%E4%B8%AD';">
                 </div>
-                <div class="px-1.5 pb-2 pt-3">
-                    <h3 class="line-clamp-2 min-h-[2.45rem] text-[15px] font-black leading-tight text-neutral-950">${escapeHTML(item.name)}</h3>
-                    <p class="line-clamp-2 mt-1 min-h-[2.25rem] text-[13px] font-medium leading-[1.35] text-neutral-500">${escapeHTML(item.description)}</p>
-                    <div class="mt-3 flex items-center justify-between gap-2">
-                        <p class="shrink-0 text-[17px] font-black leading-none text-[#FF4B1F]">${formatRM(item.price)}</p>
+                <div class="px-1.5 pb-1.5 pt-2.5">
+                    <h3 class="line-clamp-1 text-[15px] font-black leading-tight text-neutral-950">${escapeHTML(item.name)}</h3>
+                    <p class="line-clamp-2 mt-1 min-h-[2.05rem] text-[12px] font-medium leading-[1.3] text-[#6B6B6B]">${escapeHTML(item.description)}</p>
+                    <div class="mt-2.5 flex items-center justify-between gap-1.5">
+                        <p class="shrink-0 text-[16px] font-black leading-none text-[#FF4B1F]">${formatRM(item.price)}</p>
                         <div data-food-control="${index}" class="flex min-w-[40px] justify-end"></div>
                     </div>
                 </div>
