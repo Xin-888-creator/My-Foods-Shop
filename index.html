@@ -174,10 +174,16 @@
 
         <div class="min-w-0 flex-1 text-left">
             <p class="mb-1 text-xs font-semibold leading-none text-neutral-400">已选商品</p>
-            <p id="cart-summary" class="truncate text-lg font-black leading-tight tracking-tight sm:text-xl">0 件商品 · RM 0.00</p>
+            <p id="cart-summary" class="truncate text-lg font-black leading-tight tracking-tight">0 件商品 · RM 0.00</p>
+            <div class="mt-1.5">
+                <p id="cart-free-delivery-text" class="mb-1 truncate text-[11px] font-bold text-orange-400">还差 RM 300.00 免配送费</p>
+                <div class="h-1 overflow-hidden rounded-full bg-neutral-800">
+                    <div id="cart-free-delivery-bar" class="h-full rounded-full bg-orange-500 transition-all duration-300 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
         </div>
 
-        <button id="open-cart-btn" type="button" class="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-black transition-transform active:scale-95 sm:px-5">
+        <button id="open-cart-btn" type="button" class="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-black text-black transition-transform active:scale-95">
             查看购物车
         </button>
     </div>
@@ -199,39 +205,31 @@
     <div class="cart-scroll flex-1 overflow-y-auto px-5 py-4">
         <div id="cart-list" class="space-y-3"></div>
 
-        <section class="mt-4 rounded-[26px] bg-neutral-50 p-4 ring-1 ring-neutral-100" aria-labelledby="customer-info-title">
-            <h4 id="customer-info-title" class="text-base font-black text-neutral-950">下单信息（选填）</h4>
-            <div class="mt-3 space-y-3">
-                <label class="block text-sm font-bold text-neutral-600">姓名
-                    <input id="customer-name" type="text" autocomplete="name" placeholder="例如：陈先生 / 王小姐" class="mt-1.5 min-h-12 w-full rounded-2xl border-0 bg-white px-4 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400">
+        <section class="mt-4 rounded-2xl border border-neutral-100 bg-neutral-50 p-4" aria-labelledby="customer-info-title">
+            <h4 id="customer-info-title" class="mb-3 text-[15px] font-black text-neutral-950">下单信息（选填）</h4>
+            <div class="space-y-3">
+                <label class="block">
+                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">姓名</span>
+                    <input id="customer-name" type="text" autocomplete="name" placeholder="" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none focus:border-neutral-400">
                 </label>
-                <label class="block text-sm font-bold text-neutral-600">联系电话
-                    <input id="customer-phone" type="tel" autocomplete="tel" placeholder="例如：012-3456789" class="mt-1.5 min-h-12 w-full rounded-2xl border-0 bg-white px-4 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <label class="block">
+                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">联系电话</span>
+                    <input id="customer-phone" type="tel" autocomplete="tel" placeholder="" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none focus:border-neutral-400">
                 </label>
-                <label class="block text-sm font-bold text-neutral-600">地址 / 区域
-                    <input id="customer-address" type="text" autocomplete="street-address" placeholder="例如：Desa ParkCity / Mont Kiara" class="mt-1.5 min-h-12 w-full rounded-2xl border-0 bg-white px-4 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400">
-                </label>
-                <label class="block text-sm font-bold text-neutral-600">备注
-                    <textarea id="customer-remark" rows="3" placeholder="例如：不要辣、几点送、其他要求" class="mt-1.5 w-full resize-none rounded-2xl border-0 bg-white px-4 py-3 text-base font-semibold text-neutral-900 shadow-sm ring-1 ring-neutral-200 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400"></textarea>
+                <label class="block">
+                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">地址 / 区域</span>
+                    <input id="customer-address" type="text" autocomplete="street-address" placeholder="" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none focus:border-neutral-400">
                 </label>
             </div>
         </section>
     </div>
 
     <div class="shrink-0 border-t border-neutral-100 bg-white px-5 pb-5 pt-4">
-        <section class="mb-3 rounded-2xl bg-neutral-50 p-3 ring-1 ring-neutral-100" aria-label="免配送费进度">
-            <div class="mb-2 flex items-center justify-between gap-3">
-                <span class="text-xs font-black text-neutral-500">满 RM300 免配送费</span>
-                <span id="free-delivery-text" class="shrink-0 text-xs font-black text-orange-600">还差 RM 300.00 免配送费</span>
-            </div>
-            <div class="h-2.5 overflow-hidden rounded-full bg-neutral-200">
-                <div id="free-delivery-progress" class="h-full rounded-full bg-orange-500 transition-all duration-300 ease-out" style="width: 0%"></div>
-            </div>
-        </section>
-        <div class="mb-2 flex items-center justify-between">
+        <div class="mb-1 flex items-center justify-between">
             <span class="text-sm font-bold text-neutral-500">商品小计</span>
             <span id="cart-subtotal" class="text-xl font-black text-orange-600">RM 0.00</span>
         </div>
+        <p id="free-delivery-text" class="mb-3 text-xs font-black text-orange-600">还差 RM 300.00 免配送费</p>
         <p class="mb-3 text-xs font-medium leading-relaxed text-neutral-400">按去结算会自动跳转至 WhatsApp 向卖家下单，免配送费进度仅作提醒</p>
         <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-orange-600 px-5 py-4 text-base font-black text-white shadow-xl shadow-orange-600/25 active:scale-[0.99]">
             <span>去 WhatsApp 结算</span>
@@ -304,8 +302,7 @@
         return {
             name: document.getElementById('customer-name')?.value.trim() || '',
             phone: document.getElementById('customer-phone')?.value.trim() || '',
-            address: document.getElementById('customer-address')?.value.trim() || '',
-            remark: document.getElementById('customer-remark')?.value.trim() || ''
+            address: document.getElementById('customer-address')?.value.trim() || ''
         };
     }
 
@@ -339,14 +336,20 @@
 
         const freeDeliveryInfo = getFreeDeliveryInfo(totals.totalPrice);
         const freeDeliveryText = document.getElementById('free-delivery-text');
-        const freeDeliveryProgress = document.getElementById('free-delivery-progress');
-        if (freeDeliveryText && freeDeliveryProgress) {
+        const cartFreeDeliveryText = document.getElementById('cart-free-delivery-text');
+        const cartFreeDeliveryBar = document.getElementById('cart-free-delivery-bar');
+        if (freeDeliveryText) {
             freeDeliveryText.innerText = getFreeDeliveryText(totals.totalPrice);
             freeDeliveryText.classList.toggle('text-emerald-600', freeDeliveryInfo.reached);
             freeDeliveryText.classList.toggle('text-orange-600', !freeDeliveryInfo.reached);
-            freeDeliveryProgress.style.width = `${freeDeliveryInfo.progress}%`;
-            freeDeliveryProgress.classList.toggle('bg-emerald-500', freeDeliveryInfo.reached);
-            freeDeliveryProgress.classList.toggle('bg-orange-500', !freeDeliveryInfo.reached);
+        }
+        if (cartFreeDeliveryText && cartFreeDeliveryBar) {
+            cartFreeDeliveryText.innerText = getFreeDeliveryText(totals.totalPrice);
+            cartFreeDeliveryText.classList.toggle('text-emerald-400', freeDeliveryInfo.reached);
+            cartFreeDeliveryText.classList.toggle('text-orange-400', !freeDeliveryInfo.reached);
+            cartFreeDeliveryBar.style.width = `${freeDeliveryInfo.progress}%`;
+            cartFreeDeliveryBar.classList.toggle('bg-emerald-500', freeDeliveryInfo.reached);
+            cartFreeDeliveryBar.classList.toggle('bg-orange-500', !freeDeliveryInfo.reached);
         }
 
         if (totals.totalCount === 0) {
@@ -608,12 +611,11 @@
             const subtotal = Number(item.price) * item.count;
             return `• ${item.name} x ${item.count} = ${formatRM(subtotal)}`;
         });
-        const customerLines = [
-            '👤 下单信息：',
-            `姓名：${customerInfo.name || '无'}`,
-            `联系电话：${customerInfo.phone || '无'}`,
-            `地址 / 区域：${customerInfo.address || '无'}`
-        ];
+        const customerDetailLines = [];
+        if (customerInfo.name) customerDetailLines.push(`姓名：${customerInfo.name}`);
+        if (customerInfo.phone) customerDetailLines.push(`联系电话：${customerInfo.phone}`);
+        if (customerInfo.address) customerDetailLines.push(`地址 / 区域：${customerInfo.address}`);
+        const customerBlock = customerDetailLines.length ? `👤 下单信息：\n${customerDetailLines.join('\n')}\n\n` : '';
 
         trackEvent('checkout_whatsapp', {
             cart_count: totals.totalCount,
@@ -621,11 +623,10 @@
             has_name: Boolean(customerInfo.name),
             has_phone: Boolean(customerInfo.phone),
             has_address: Boolean(customerInfo.address),
-            has_remark: Boolean(customerInfo.remark),
             free_delivery_reached: totals.totalPrice >= FREE_DELIVERY_THRESHOLD
         });
 
-        const text = `你好，我要下单：\n\n${customerLines.join('\n')}\n\n🧾 订单明细：\n${lines.join('\n')}\n\n---\n\n商品小计：${formatRM(totals.totalPrice)}\n免配送进度：${getFreeDeliveryText(totals.totalPrice)}\n\n备注：${customerInfo.remark || '无'}\n谢谢！`;
+        const text = `你好，我要下单：\n\n${customerBlock}🧾 订单明细：\n${lines.join('\n')}\n\n---\n\n商品小计：${formatRM(totals.totalPrice)}\n免配送进度：${getFreeDeliveryText(totals.totalPrice)}\n\n谢谢！`;
         window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(text)}`);
     }
 
