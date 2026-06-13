@@ -212,20 +212,20 @@
     <div class="cart-scroll flex-1 overflow-y-auto px-5 py-3.5">
         <div id="cart-list" class="space-y-3"></div>
 
-        <section class="mt-4 rounded-2xl border border-[#EDEDED] bg-white p-4" aria-labelledby="customer-info-title">
+        <section class="mt-4 rounded-2xl border border-neutral-200 bg-white p-4" aria-labelledby="customer-info-title">
             <h4 id="customer-info-title" class="mb-3 text-[15px] font-black text-neutral-950">下单信息（选填）</h4>
-            <div class="space-y-2.5">
-                <label class="relative block">
-                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#9A9A9A]">👤</span>
-                    <input id="customer-name" type="text" autocomplete="name" placeholder="姓名" class="h-[42px] w-full rounded-xl border border-[#E5E5E5] bg-white pl-9 pr-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A]/50 focus:ring-2 focus:ring-[#174F2A]/10">
+            <div class="space-y-3">
+                <label class="block">
+                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">姓名</span>
+                    <input id="customer-name" type="text" autocomplete="name" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A] focus:ring-2 focus:ring-[#174F2A]/10">
                 </label>
-                <label class="relative block">
-                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#9A9A9A]">✆</span>
-                    <input id="customer-phone" type="tel" autocomplete="tel" placeholder="联系电话" class="h-[42px] w-full rounded-xl border border-[#E5E5E5] bg-white pl-9 pr-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A]/50 focus:ring-2 focus:ring-[#174F2A]/10">
+                <label class="block">
+                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">联系电话</span>
+                    <input id="customer-phone" type="tel" autocomplete="tel" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A] focus:ring-2 focus:ring-[#174F2A]/10">
                 </label>
-                <label class="relative block">
-                    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#9A9A9A]">⌖</span>
-                    <input id="customer-address" type="text" autocomplete="street-address" placeholder="地址 / 区域" class="h-[42px] w-full rounded-xl border border-[#E5E5E5] bg-white pl-9 pr-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A]/50 focus:ring-2 focus:ring-[#174F2A]/10">
+                <label class="block">
+                    <span class="mb-1.5 block text-[13px] font-bold text-neutral-600">地址 / 区域</span>
+                    <input id="customer-address" type="text" autocomplete="street-address" class="h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-semibold text-neutral-900 outline-none transition focus:border-[#174F2A] focus:ring-2 focus:ring-[#174F2A]/10">
                 </label>
             </div>
         </section>
@@ -237,7 +237,6 @@
             <span id="cart-subtotal" class="text-xl font-black text-[#FF4B1F]">RM 0.00</span>
         </div>
         <p id="free-delivery-text" class="mb-3 text-xs font-black text-[#FF4B1F]">还差 RM 300.00 免配送费</p>
-        <p class="mb-3 text-xs font-medium leading-relaxed text-neutral-400">按去结算会自动跳转至 WhatsApp 向卖家下单，免配送费进度仅作提醒</p>
         <button id="checkout-btn" type="button" class="pressable flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#1FAF5A] px-5 py-4 text-base font-black text-white shadow-xl shadow-[#1FAF5A]/22 hover:bg-[#168A45] active:bg-[#168A45] active:scale-[0.99]">
             <svg viewBox="0 0 32 32" class="h-5 w-5" fill="currentColor" aria-hidden="true">
                 <path d="M19.11 17.2c-.28-.14-1.65-.81-1.9-.9-.26-.1-.45-.14-.64.14-.19.28-.73.9-.9 1.09-.16.19-.33.21-.61.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.49.14-.16.19-.28.28-.47.09-.19.05-.35-.02-.49-.07-.14-.64-1.54-.88-2.11-.23-.56-.47-.48-.64-.49h-.55c-.19 0-.49.07-.75.35-.26.28-.99.97-.99 2.37s1.02 2.75 1.16 2.94c.14.19 2.01 3.07 4.87 4.3.68.29 1.21.47 1.62.6.68.22 1.3.19 1.79.12.55-.08 1.65-.67 1.89-1.32.23-.65.23-1.2.16-1.32-.07-.12-.26-.19-.54-.33z"></path>
@@ -427,7 +426,7 @@
                 `;
             } else {
                 control.innerHTML = `
-                    <button type="button" data-action="add-food" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#174F2A] text-xl font-black text-white shadow-lg shadow-black/10 transition-transform active:scale-95">
+                    <button type="button" data-action="add-food" class="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-[#174F2A] text-xl font-black leading-none text-white shadow-lg shadow-black/10 transition-transform active:scale-95">
                         +
                     </button>
                 `;
@@ -525,21 +524,27 @@
             return;
         }
 
-        container.innerHTML = filteredData.map(({ item, index }) => `
-            <article data-food-index="${index}" class="food-card overflow-hidden rounded-[1.4rem] border border-[#EDEDED] bg-white p-2 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
-                <div class="aspect-[1.08/1] overflow-hidden rounded-[18px] bg-[#F2F2F2]">
-                    <img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.name)}" class="h-full w-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/400/f3f4f6/9ca3af?text=%E7%BE%8E%E5%91%B3%E7%AD%B9%E5%A4%87%E4%B8%AD';">
-                </div>
-                <div class="px-1.5 pb-1.5 pt-2.5">
-                    <h3 class="line-clamp-1 text-[15px] font-black leading-tight text-neutral-950">${escapeHTML(item.name)}</h3>
-                    <p class="line-clamp-2 mt-1 min-h-[2.05rem] text-[12px] font-medium leading-[1.3] text-[#6B6B6B]">${escapeHTML(item.description)}</p>
-                    <div class="mt-2.5 flex items-center justify-between gap-1.5">
-                        <p class="shrink-0 text-[16px] font-black leading-none text-[#FF4B1F]">${formatRM(item.price)}</p>
-                        <div data-food-control="${index}" class="flex min-w-[40px] justify-end"></div>
+        container.innerHTML = filteredData.map(({ item, index }) => {
+            const description = item.description && item.description.trim()
+                ? `<p class="line-clamp-2 mt-1 text-[12px] leading-4 text-neutral-500">${escapeHTML(item.description)}</p>`
+                : '';
+
+            return `
+                <article data-food-index="${index}" class="food-card overflow-hidden rounded-[1.4rem] border border-neutral-200 bg-white p-2 shadow-sm">
+                    <div class="aspect-square overflow-hidden rounded-[1.1rem] bg-neutral-100">
+                        <img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.name)}" class="h-full w-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/400/f3f4f6/9ca3af?text=%E7%BE%8E%E5%91%B3%E7%AD%B9%E5%A4%87%E4%B8%AD';">
                     </div>
-                </div>
-            </article>
-        `).join('');
+                    <div class="flex flex-col px-1 pb-1 pt-3">
+                        <h3 class="line-clamp-2 text-[14px] font-black leading-tight text-neutral-950">${escapeHTML(item.name)}</h3>
+                        ${description}
+                        <div class="mt-3 flex items-center justify-between gap-2">
+                            <p class="shrink-0 text-[16px] font-black leading-none text-[#FF4B1F]">${formatRM(item.price)}</p>
+                            <div data-food-control="${index}" class="flex min-w-[40px] justify-end"></div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }).join('');
 
         updateFoodControls();
     }
@@ -622,10 +627,7 @@
         }
 
         const customerInfo = getCustomerInfo();
-        const lines = items.map(item => {
-            const subtotal = Number(item.price) * item.count;
-            return `• ${item.name} x ${item.count} = ${formatRM(subtotal)}`;
-        });
+        const lines = items.map(item => `• ${item.name} x ${item.count}`);
         const customerDetailLines = [];
         if (customerInfo.name) customerDetailLines.push(`姓名：${customerInfo.name}`);
         if (customerInfo.phone) customerDetailLines.push(`联系电话：${customerInfo.phone}`);
@@ -641,7 +643,7 @@
             free_delivery_reached: totals.totalPrice >= FREE_DELIVERY_THRESHOLD
         });
 
-        const text = `你好，我要下单：\n\n${customerBlock}🧾 订单明细：\n${lines.join('\n')}\n\n---\n\n商品小计：${formatRM(totals.totalPrice)}\n免配送进度：${getFreeDeliveryText(totals.totalPrice)}\n\n谢谢！`;
+        const text = `你好，我要下单：\n\n${customerBlock}🧾 订单明细：\n${lines.join('\n')}\n\n---\n\n总计：${formatRM(totals.totalPrice)}\n\n谢谢！`;
         window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(text)}`);
     }
 
