@@ -14,7 +14,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>闽南小吃</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        window.__loadSupabaseFallback = function () {
+            if (window.__supabaseFallbackRequested) return;
+            window.__supabaseFallbackRequested = true;
+
+            const fallbackScript = document.createElement('script');
+            fallbackScript.src = 'https://unpkg.com/@supabase/supabase-js@2';
+            fallbackScript.async = true;
+            document.head.appendChild(fallbackScript);
+        };
+    </script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+        onerror="window.__loadSupabaseFallback && window.__loadSupabaseFallback()">
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -293,7 +307,7 @@
     const MY_PHONE = "601116867588";
     const FREE_DELIVERY_THRESHOLD = 300;
 
-    const supabaseClient = supabase.createClient(RAW_URL, RAW_KEY);
+    let supabaseClient = null;
     let cart = {};
     let allFoodData = [];
     let currentCategory = '小吃';
@@ -320,6 +334,45 @@
         if (typeof gtag === 'function') {
             gtag('event', eventName, params);
         }
+    }
+
+    function showMenuError(message, countText = '加载失败') {
+        const foodContainer = document.getElementById('food-container');
+        const menuCount = document.getElementById('menu-count');
+
+        if (foodContainer) {
+            foodContainer.innerHTML = `
+                <p class="col-span-2 rounded-[28px] bg-white px-4 py-12 text-center text-sm font-bold text-neutral-400 shadow-sm ring-1 ring-neutral-100">
+                    ${message}
+                </p>
+            `;
+        }
+
+        if (menuCount) {
+            menuCount.innerText = countText;
+        }
+    }
+
+    function waitForSupabase(timeoutMs = 10000) {
+        return new Promise((resolve, reject) => {
+            const startedAt = Date.now();
+
+            const check = () => {
+                if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    resolve(window.supabase);
+                    return;
+                }
+
+                if (Date.now() - startedAt >= timeoutMs) {
+                    reject(new Error('Supabase SDK failed to load'));
+                    return;
+                }
+
+                setTimeout(check, 100);
+            };
+
+            check();
+        });
     }
 
     function getCartTotals() {
@@ -591,6 +644,10 @@
 
     async function fetchMenu() {
         try {
+            if (!supabaseClient) {
+                throw new Error('Supabase client is not ready');
+            }
+
             // 获取数据并按 sort_order 升序排列
             const { data, error } = await supabaseClient
                 .from('foods')
@@ -598,14 +655,45 @@
                 .order('sort_order', { ascending: true });
 
             if (error) throw error;
+
             allFoodData = (data || []).map(normalizeFoodItem);
             trackEvent('menu_loaded', { item_count: allFoodData.length });
             filterMenu(currentCategory, false);
         } catch (err) {
             console.error("加载失败:", err);
-            trackEvent('menu_load_failed', { error_message: String(err.message || err) });
-            document.getElementById('food-container').innerHTML = '<p class="col-span-2 rounded-[28px] bg-white px-4 py-12 text-center text-sm font-bold text-neutral-400 shadow-sm ring-1 ring-neutral-100">菜单加载失败，请稍后再试。</p>';
-            document.getElementById('menu-count').innerText = '加载失败';
+
+            if (typeof trackEvent === 'function') {
+                trackEvent('menu_load_failed', {
+                    error_message: String(err.message || err)
+                });
+            }
+
+            showMenuError('菜单加载失败，请稍后再试。', '加载失败');
+        }
+    }
+
+    async function initApp() {
+        const loadingTimer = setTimeout(() => {
+            showMenuError('菜单加载较慢，请刷新页面或换一个网络再试。', '加载较慢');
+        }, 10000);
+
+        try {
+            const supabaseSdk = await waitForSupabase(10000);
+            supabaseClient = supabaseSdk.createClient(RAW_URL, RAW_KEY);
+
+            clearTimeout(loadingTimer);
+            await fetchMenu();
+        } catch (err) {
+            clearTimeout(loadingTimer);
+            console.error('初始化失败:', err);
+
+            if (typeof trackEvent === 'function') {
+                trackEvent('menu_load_failed', {
+                    error_message: String(err.message || err)
+                });
+            }
+
+            showMenuError('菜单加载失败，请刷新页面或换一个网络再试。', '加载失败');
         }
     }
 
@@ -738,7 +826,7 @@
     document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
     document.getElementById('checkout-btn').addEventListener('click', sendOrder);
 
-    fetchMenu();
+    initApp();
 </script>
 
 </body>
