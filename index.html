@@ -14,21 +14,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>闽南小吃</title>
 
-    <script>
-        window.__loadSupabaseFallback = function () {
-            if (window.__supabaseFallbackRequested) return;
-            window.__supabaseFallbackRequested = true;
-
-            const fallbackScript = document.createElement('script');
-            fallbackScript.src = 'https://unpkg.com/@supabase/supabase-js@2';
-            fallbackScript.async = true;
-            document.head.appendChild(fallbackScript);
-        };
-    </script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-        onerror="window.__loadSupabaseFallback && window.__loadSupabaseFallback()">
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -302,12 +287,9 @@
 </aside>
 
 <script>
-    const RAW_URL = "https://ysdhfvypbbokdwvoorco.supabase.co";
-    const RAW_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzZGhmdnlwYmJva2R3dm9vcmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTY3MjAsImV4cCI6MjA4MTc5MjcyMH0.Q5O2wdgrUL_d1JlD0TAMlTjIolwUctg4deXEFQ7pJ20";
+    const FOOD_API_URL = "https://my-foods-api.chenrongxin2007.workers.dev/api/foods";
     const MY_PHONE = "601116867588";
     const FREE_DELIVERY_THRESHOLD = 300;
-
-    let supabaseClient = null;
     let cart = {};
     let allFoodData = [];
     let currentCategory = '小吃';
@@ -351,28 +333,6 @@
         if (menuCount) {
             menuCount.innerText = countText;
         }
-    }
-
-    function waitForSupabase(timeoutMs = 10000) {
-        return new Promise((resolve, reject) => {
-            const startedAt = Date.now();
-
-            const check = () => {
-                if (window.supabase && typeof window.supabase.createClient === 'function') {
-                    resolve(window.supabase);
-                    return;
-                }
-
-                if (Date.now() - startedAt >= timeoutMs) {
-                    reject(new Error('Supabase SDK failed to load'));
-                    return;
-                }
-
-                setTimeout(check, 100);
-            };
-
-            check();
-        });
     }
 
     function getCartTotals() {
@@ -644,19 +604,32 @@
 
     async function fetchMenu() {
         try {
-            if (!supabaseClient) {
-                throw new Error('Supabase client is not ready');
+            const response = await fetch(FOOD_API_URL, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            });
+
+            if (!response.ok) {
+                throw new Error(`Food API request failed: ${response.status}`);
             }
 
-            // 获取数据并按 sort_order 升序排列
-            const { data, error } = await supabaseClient
-                .from('foods')
-                .select('name, description, price, image_url, category, sort_order')
-                .order('sort_order', { ascending: true });
+            const payload = await response.json();
+            const data = Array.isArray(payload)
+                ? payload
+                : Array.isArray(payload?.data)
+                    ? payload.data
+                    : Array.isArray(payload?.results)
+                        ? payload.results
+                        : [];
 
-            if (error) throw error;
+            if (!Array.isArray(data)) {
+                throw new Error('Food API returned an invalid response');
+            }
 
-            allFoodData = (data || []).map(normalizeFoodItem);
+            allFoodData = data.map(normalizeFoodItem);
             trackEvent('menu_loaded', { item_count: allFoodData.length });
             filterMenu(currentCategory, false);
         } catch (err) {
@@ -678,11 +651,8 @@
         }, 10000);
 
         try {
-            const supabaseSdk = await waitForSupabase(10000);
-            supabaseClient = supabaseSdk.createClient(RAW_URL, RAW_KEY);
-
-            clearTimeout(loadingTimer);
             await fetchMenu();
+            clearTimeout(loadingTimer);
         } catch (err) {
             clearTimeout(loadingTimer);
             console.error('初始化失败:', err);
